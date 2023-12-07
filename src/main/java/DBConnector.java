@@ -18,8 +18,12 @@ public class DBConnector {
         return false;
     }
 
-    private ArrayList<Product> getProducts = new ArrayList<Product>();
+    public ArrayList<Product> getProducts(){
+        return null;
+    }
 
-    private ArrayList<Recipe> getRecipes = new ArrayList<Recipe>();
+    public ArrayList<Recipe> getRecipes (){
+        return null;
+    }
 }
 
