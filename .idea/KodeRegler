@@ -1,0 +1,12 @@
+1)
+Funktioner / metoder / variabler skal skrives i camelcase. Fx funktionNavn()
+
+2)
+Denne her sjover { skal komme på næste linje. Fx hvis man har et if() statement skal det se sådan her ud:
+if()
+{
+
+}
+
+3)
+Hvis koden er nået kanten, er den for lang. Hvis det er i en string, skal der sættes \n på

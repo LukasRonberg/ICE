@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+ Class TextUI
+TextUI : + getInput()
+TextUI : + displayMessage()
+
+ Class DBConnector
+ DBConnector : + boolean checkUserData()
+ DBConnector : + boolean saveUserData()
+ DBConnector : + boolean createUser()
+ DBConnector : + ArrayList<Product> getProducts()
+ DBConnector : + ArrayList<Recipe> getRecipes()
+
+ Class Main
+
+ Class User
+ User : - String username
+ User : - String password
+ User : - ArrayList<Recipe> savedRecipes
+ User : - ArrayList<String> savedProducts
+ User : + add()
+ User : + remove()
+
+ Class StartMenu
+ StartMenu : - HashSet<User> userList
+ StartMenu : + void createUser()
+ StartMenu : + void login()
+
+ Class MainMenu
+ MainMenu : - User currentUser
+ MainMenu : + searchProducts()
+ MainMenu : + searchRecipes()
+ MainMenu : + searchByIngredients()
+ MainMenu : + searchByBudget()
+
+ Class Recipe
+ Recipe : - ArrayList<Product> productList
+ Recipe : - String name
+ Recipe : - String[] ingredients
+ Recipe : + ArrayList<Product> findCheapestProducts()
+ Recipe : + ArrayList<Product> findCheapestStore()
+
+ Class Product
+ Product : - String name
+ Product : - Enum store
+ Product : - int weight
+ Product : - double price
+ Product : - Image image
+ Product : - Enum productType
+ Product : + double pricePerGram()
+
+ Class GUI
+
+
+@enduml
