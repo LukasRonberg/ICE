@@ -1,20 +1,131 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class Recipe {
 
     String name;
 
-    String[] ingredients;
+    List<String> ingredients;
 
-    private ArrayList<Product> productList = new ArrayList<Product>();
+    //Double TotalPrice;
+    private ArrayList<Product> productList = null;
 
-    public ArrayList<Product> findCheapestProducts()
-    {
-        return null;
+
+    public Recipe(String name, List<String> ingredients) {
+        this.name = name;
+        this.ingredients = ingredients;
     }
 
-    public ArrayList<Product> findCheapestStore()
+    public double calculateTotalPrice(){
+        double priceCalc = 0;
+        for (Product product: productList) {
+            priceCalc += product.price;
+        }
+        return priceCalc;
+    }
+
+
+//Gammel ikke brug - den er blot her for at vise forskel på hurtighed
+    public ArrayList<Product> findCheapestProducts(ArrayList<Product> productList)
     {
-        return null;
+        ArrayList<Product> cheapestProducts = new ArrayList<>();
+        for (String ingredient : ingredients) {
+            for (Product product: productList) {
+                if(ingredient.equals(product.name) && !cheapestProducts.isEmpty()){
+                    for (Product priceCompare:cheapestProducts) {
+                        if(product.pricePerGram() < priceCompare.pricePerGram()){
+                            cheapestProducts.add(product);
+                            cheapestProducts.remove(priceCompare);
+                        }
+                    }
+                } else if(ingredient.equals(product.name)){
+                    cheapestProducts.add(product);
+                }
+            }
+        }
+        this.productList = cheapestProducts;
+        return cheapestProducts;
+    }
+
+    public List<Product> findCheapestProductsNewAndBetter(List<Product> productList, List<String> ingredients) {
+        Map<String, Product> cheapestProductMap = new HashMap<>();
+
+        if(ingredients == null) ingredients = this.ingredients;
+        for (Product product : productList) {
+            if (ingredients.contains(product.name)) {
+                String ingredient = product.name;
+                if (!cheapestProductMap.containsKey(ingredient) ||
+                        product.pricePerGram() < cheapestProductMap.get(ingredient).pricePerGram()) {
+                    cheapestProductMap.put(ingredient, product);
+                }
+            }
+        }
+
+        return this.productList = new ArrayList<>(cheapestProductMap.values());
+    }
+
+
+    public ArrayList<Product> findCheapestProductInStoreInOrder(List<Product> productList, List<String> ingredients, Enums.StoreType storeType) {
+        ArrayList<Product> cheapestProducts = new ArrayList<>();
+
+        if(ingredients == null) ingredients = this.ingredients;
+        for (Product product : productList) {
+            if (ingredients.contains(product.name) && product.storeType == storeType) {
+                cheapestProducts.add(product);
+                }
+
+        }
+
+        return this.productList = cheapestProducts;
+    }
+
+
+    public ArrayList<Store> findCheapestStore(List<Product> productList)
+    {
+        //ArrayList<ArrayList<Product>> storeHolder = new ArrayList<ArrayList<Product>>();
+        ArrayList<Store> storeHolder = new ArrayList<>();
+        double totalStorePrice = 0;
+        for (Enums.StoreType storeType: Enums.StoreType.values()){
+            Store store = new Store(storeType.name());
+            for (int i = 0; i < ingredients.size(); i++) {
+                var cheapestProduct = findCheapestProductInStoreInOrder(productList, new ArrayList<>(Arrays.asList(ingredients.get(i))), storeType);
+                //storeHolder.add(store);
+                if(!cheapestProduct.isEmpty()){
+                    store.addToProducts(cheapestProduct.get(0));
+                }
+                //cheapestProduct.get(0).pricePerGram();
+            }
+            store.calcTotalStorePrice();
+            storeHolder.add(store);
+        }
+        //storeHolder.sort((Comparator.comparingDouble(Store::calcTotalStorePrice)));
+        return storeHolder;
+    }
+
+    // TODO: 08-12-2023 ryk klasse? 
+    public class Store{
+
+        public String storeName;
+        public double totalStorePrice = 0;
+        ArrayList<Product> products = new ArrayList<>();
+
+        public Store(String name) {
+            //this.totalStorePrice = totalStorePrice;
+            this.storeName = name;
+            this.products = new ArrayList<>();
+        }
+
+        public void calcTotalStorePrice(){
+            for (Product p: products) {
+                totalStorePrice += p.pricePerGram();
+            }
+        }
+
+        public void addToProducts(Product product){
+            products.add(product);
+        }
+
+        public double getTotalStorePrice(){
+            return totalStorePrice;
+        }
     }
 }
