@@ -30,13 +30,15 @@ TextUI : + displayMessage()
  Class MainMenu
  MainMenu : - User currentUser
  MainMenu : + searchProducts()
- MainMenu : + searchRecipes()
+ MainMenu : + searchRecipesByName()
  MainMenu : + searchByIngredients()
- MainMenu : + searchByBudget()
+ MainMenu : + searchRecipesByBudget()
+ MainMenu : + viewTopRecipes()
 
  Class Recipe
  Recipe : - ArrayList<Product> productList
  Recipe : - String name
+ Recipe : - double totalPrice
  Recipe : - String[] ingredients
  Recipe : + ArrayList<Product> findCheapestProducts()
  Recipe : + ArrayList<Product> findCheapestStore()

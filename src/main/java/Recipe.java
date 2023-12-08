@@ -101,7 +101,15 @@ public class Recipe {
         return storeHolder;
     }
 
-    // TODO: 08-12-2023 ryk klasse? 
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<Product> getProductList() {
+        return productList;
+    }
+
+    // TODO: 08-12-2023 ryk klasse?
     public class Store{
 
         public String storeName;
