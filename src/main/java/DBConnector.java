@@ -15,7 +15,6 @@ public class DBConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //String sql = "SELECT * FROM user WHERE username = 'typedUserName'";
             String sql = "SELECT * FROM user";
 
             stmt = conn.prepareStatement(sql);
@@ -187,7 +186,6 @@ public class DBConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //String sql = "INSERT INTO user (username,password) VALUES ('" + username + "', '" + password + "')";
             String sql = "DELETE FROM user WHERE username = '" + typedUsername + "'";
             stmt = conn.prepareStatement(sql);
             stmt.executeUpdate(sql);
