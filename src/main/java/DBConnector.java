@@ -3,9 +3,7 @@ import java.util.ArrayList;
 
 
 public class DBConnector {
-    private final String DB_URL = "jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db";
-    private final String USER = "thegreenway_dk";
-    private final String PASS = "TheBlueMan45";
+
 
     public DBConnector() {
     }
