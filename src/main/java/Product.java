@@ -1,7 +1,7 @@
-import java.awt.*;
+
 
 public class Product {
-    public Product(String name, int weight, double price, Image image, Enums.ProductType productType, Enums.StoreType storeType) {
+    public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType) {
         this.name = name;
         this.weight = weight;
         this.price = price;
@@ -16,7 +16,7 @@ public class Product {
 
     double price;
 
-    Image image;
+    String image;
 
     Enums.ProductType productType = null;
     Enums.StoreType storeType = null;
@@ -26,4 +26,5 @@ public class Product {
         //return 0;
         return price/weight*100;
     }
+
 }
