@@ -16,7 +16,7 @@ public class DBConnector {
         boolean userExist = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             //String sql = "SELECT * FROM user WHERE username = 'typedUserName'";
             String sql = "SELECT * FROM user";
 
@@ -62,7 +62,7 @@ public class DBConnector {
         boolean correctPassword = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM user";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
@@ -109,7 +109,7 @@ public class DBConnector {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM user";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
@@ -152,7 +152,7 @@ public class DBConnector {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "INSERT INTO user (username,password) VALUES ('" + username + "', '" + password + "')";
             stmt = conn.prepareStatement(sql);
             stmt.executeUpdate(sql);
@@ -188,7 +188,7 @@ public class DBConnector {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             //String sql = "INSERT INTO user (username,password) VALUES ('" + username + "', '" + password + "')";
             String sql = "DELETE FROM user WHERE username = '" + typedUsername + "'";
             stmt = conn.prepareStatement(sql);
@@ -226,7 +226,7 @@ public class DBConnector {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM product";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
@@ -278,7 +278,7 @@ public class DBConnector {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db", "thegreenway_dk", "TheBlueMan45");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM recipe";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
@@ -322,4 +322,3 @@ public class DBConnector {
         }
     }
 }
-
