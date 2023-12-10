@@ -1,5 +1,7 @@
+import javax.naming.Name;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class DBConnector {
@@ -316,5 +318,41 @@ public class DBConnector {
 
             return recipes;
         }
+    }
+}
+
+    // Liste over vores madvarer, i form af en ArrayList
+    public List<Recipe> getRecipeByIngredient(String ingredients) {
+        List<Recipe> recipeList = new ArrayList<>();
+
+        // Forsøger at skabe en forbindelse til vores DBConnector
+        try {
+            Connection connection = dbConnector.getConnection();
+
+    /* Prøver at erklære et statement, som udfører forbindelsen med SQL, hvilket giver mulighed for, at kunne søge på
+       specifikke ingredienser, som kan forbindes til nøgleord af bestemte ingredienser, og kan sammenlignes med
+       opskrifter mm. Og "?" symbolet skal erstattes med værdien af den søgte ingrediens, for at undgå forvirring */
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM food_items WHERE ingredients "
+                    + "LIKE ?");
+
+    /* Symbolet "%" giver anledning til, at kunne matche enhver karakter i vores string af ingredienser, og "1" er vores
+    indeks af vores parameter, som vi vil forbinde værdien af vores valgte ingrediens */
+            statement.setString(1, "%" + ingredients + "%");
+
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                Recipe recipes = new Recipe("name", Collections.singletonList("ingredients"));
+                recipes.add(recipes);
+            }
+
+            results.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return recipeList;
     }
 }

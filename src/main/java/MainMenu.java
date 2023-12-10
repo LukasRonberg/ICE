@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class MainMenu {
     public ArrayList<Recipe> allRecipes;
@@ -23,15 +24,18 @@ public class MainMenu {
 
     public void searchProducts()
     {
-
     }
 
     public void searchRecipes()
     {
     }
 
-    public void searchByIngredients()
+    public void searchByIngrediens()
     {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a desired ingredient: ");
+        String ingredient = scanner.nextLine();
+        dbConnector.getRecipeByIngredient(ingredient);
     }
 
     public void searchRecipesByBudget()
