@@ -27,4 +27,9 @@ public class Product {
         return price/weight*100;
     }
 
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", weight: " + weight + ", price: " + price + ", product type: " + productType + ", store: " + storeType;
+    }
 }

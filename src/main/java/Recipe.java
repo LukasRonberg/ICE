@@ -135,5 +135,9 @@ public class Recipe {
         public double getTotalStorePrice(){
             return totalStorePrice;
         }
+
+        public ArrayList<Product> getProducts(){
+            return products;
+        }
     }
 }
