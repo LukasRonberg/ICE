@@ -23,8 +23,12 @@ public class Recipe {
         return priceCalc;
     }
 
+    @Override
+    public String toString() {
+        return "Name: " + name + ", ingredients: " + ingredients;
+    }
 
-//Gammel ikke brug - den er blot her for at vise forskel på hurtighed
+    //Gammel ikke brug - den er blot her for at vise forskel på hurtighed
     public ArrayList<Product> findCheapestProducts(ArrayList<Product> productList)
     {
         ArrayList<Product> cheapestProducts = new ArrayList<>();

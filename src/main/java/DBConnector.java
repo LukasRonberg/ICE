@@ -6,7 +6,9 @@ import java.util.List;
 
 
 public class DBConnector {
-
+    private final String DB_URL = "jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db";
+    private final String USER = "thegreenway_dk";
+    private final String PASS = "TheBlueMan45";
 
     public DBConnector() {
     }
@@ -361,4 +363,44 @@ public class DBConnector {
         }
         return recipeList;
     }
+
+    public boolean insertFoodProducts(Product productToInsert) {
+        boolean insertCompleted = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "INSERT INTO product (name,store, weight, price, image, type) VALUES ('" + productToInsert.name + "', '"
+                    + productToInsert.storeType + "', '" +productToInsert.weight + "', '" + productToInsert.price +
+                    "', '" + productToInsert.image + "', '" + productToInsert.productType + "')";
+            stmt = conn.prepareStatement(sql);
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+            insertCompleted = true;
+        } catch (SQLException var23) {
+            var23.printStackTrace();
+        } catch (Exception var24) {
+            var24.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var22) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var21) {
+                var21.printStackTrace();
+            }
+        }
+        return insertCompleted;
+    }
+
+
 }

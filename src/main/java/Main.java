@@ -9,13 +9,26 @@ public class Main {
 
     public static void patrickTest(){
         ArrayList<Product> products = new ArrayList<>();
+        DBConnector dbConnector = new DBConnector();
+        TextUi textUI = new TextUi();
+        GUI gui = new GUI();
+        products = dbConnector.getProducts();
+        //products = generateDataset(500);
+        for (Product product: products) {
+            //textUI.displayMessage();(product.toString());
+            //dbConnector.insertFoodProducts(product);
+        }
 
-        //DBConnector dbConnector = new DBConnector();
-        //products = dbConnector.getProducts();
-        products = generateDataset(5000);
-        //for (Product product: products) {
-        //System.out.println(product.toString());
-        //}
+        gui.start();
+
+
+        textUI.displayMessage(products.size()+"");
+
+        ArrayList<Recipe> recipes = dbConnector.getRecipes();
+
+        /*for (Recipe r: recipes) {
+            textUI.displayMessage();(r.toString());
+        }*/
 
         Recipe recipe = new Recipe("Bolo", new ArrayList<String>(Arrays.asList("hakket oksekød","smør","letmælk", "revet mozzarella", "peberfrugt", "ris")));
 
@@ -23,39 +36,40 @@ public class Main {
         products.sort((Comparator.comparingDouble(Product::pricePerGram)));
 
 
-        System.out.println();
-        System.out.println("Test 1: Using Bolo");
+        //textUI.displayMessage();();
+        textUI.displayMessage("Test 1: Using Bolo");
         long start1 = System.nanoTime();
         var test1 = recipe.findCheapestProducts(products);
-        System.out.println("Name: "+test1.get(0).name +", Price per 100g: "+test1.get(0).pricePerGram() +", Price: "+ test1.get(0).price+", Store: "+ test1.get(0).storeType);
+        textUI.displayMessage("Name: "+test1.get(0).name +", Price per 100g: "+test1.get(0).pricePerGram() +", Price: "+ test1.get(0).price+", Store: "+ test1.get(0).storeType);
         long end1 = System.nanoTime();
-        System.out.println("Elapsed Time in nano seconds: "+ (end1-start1));
+        textUI.displayMessage("Elapsed Time in nano seconds: "+ (end1-start1));
 
 
-        System.out.println();
-        System.out.println("Test 2: Using Bolo");
+        //textUI.displayMessage();();
+        textUI.displayMessage("Test 2: Using Bolo");
         start1 = System.nanoTime();
         var test2 = recipe.findCheapestProductsNewAndBetter(products,null);
         for (Product p: test2) {
-            System.out.println("Name: "+p.name +", Price per 100g: "+ (Math.round(p.pricePerGram() * 100.0) / 100.0) +", Price: "+ p.price+", Store: "+ p.storeType);
+            textUI.displayMessage("Name: "+p.name +", Price per 100g: "+ (Math.round(p.pricePerGram() * 100.0) / 100.0) +", Price: "+ p.price+", Store: "+ p.storeType);
         }
-        System.out.println("Total price for this recipe is: "+ recipe.calculateTotalPrice());
+        textUI.displayMessage("Total price for this recipe is: "+ recipe.calculateTotalPrice());
         end1 = System.nanoTime();
-        System.out.println("Elapsed Time in nano seconds: "+ (end1-start1));
+        textUI.displayMessage("Elapsed Time in nano seconds: "+ (end1-start1));
 
 
-        System.out.println();
-        System.out.println("Test 3: Using Bolo");
+        //textUI.displayMessage();();
+        textUI.displayMessage("Test 3: Using Bolo");
         start1 = System.nanoTime();
         var test3 = recipe.findCheapestStore(products);
         test3.sort((Comparator.comparingDouble(Recipe.Store::getTotalStorePrice)));
         for (Recipe.Store store: test3) {
             if(store.getTotalStorePrice() > 0)
 
-                System.out.println("Store name: "+store.storeName+", total price per 100g: "+ (Math.round(store.totalStorePrice * 100.0) / 100.0) + ", number of wares in store: "+ store.getProducts().size());
+                textUI.displayMessage("Store name: "+store.storeName+", total price per 100g: "+ (Math.round(store.totalStorePrice * 100.0) / 100.0) + ", number of wares in store: "+ store.getProducts().size());
         }
         end1 = System.nanoTime();
-        System.out.println("Elapsed Time in nano seconds: "+ (end1-start1));
+        textUI.displayMessage("Elapsed Time in nano seconds: "+ (end1-start1));
+
 
 
     }
@@ -73,7 +87,12 @@ public class Main {
                 , "hakket svinekød", "fløde", "mælk", "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding",
                 "citronsaft", "appelsinjuice", "fiskesauce", "sojasauce", "pasta", "gær", "balsamicoeddike", "røde bønner",
                 "mørk chokolade", "sukker", "kanel", "jordbærmarmelade", "ærtepuré", "kyllingefond", "tun på dåse", "frisk ingefær",
-                "muskatnød", "flødeost", "rucola", "paprika", "rødvin", "hvidvin"};
+                "muskatnød", "flødeost", "rucola", "paprika", "rødvin", "hvidvin",
+                "letmælk", "revet mozzarella", "peberfrugt", "agurk", "kiks", "honning", "avocado", "grønne bønner",
+                "pølser", "jordnøddesmør", "rugbrød", "solsikkefrø", "rugbrødschips", "is", "friske bær", "fløde", "mælk",
+                "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding", "citronsaft", "appelsinjuice",
+                "fiskesauce", "sojasauce", "gær", "balsamicoeddike", "røde bønner", "sukker", "jordbærmarmelade", "ærtepuré",
+                "kyllingefond", "tun på dåse", "frisk ingefær", "muskatnød", "rucola", "paprika"};
 
         for (int i = 0; i < numEntries; i++) {
             String name = mad[random.nextInt(0, mad.length)];
@@ -88,5 +107,6 @@ public class Main {
 
         return dataset;
     }
+
 
 }
