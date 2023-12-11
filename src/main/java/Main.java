@@ -4,7 +4,13 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        patrickTest();
+       while (true) {
+          StartMenu startMenu = new StartMenu();
+          startMenu.display();
+          User currentUser = startMenu.getUserAccount();
+       }
+
+        //patrickTest();
     }
 
     public static void patrickTest(){
@@ -19,7 +25,7 @@ public class Main {
             //dbConnector.insertFoodProducts(product);
         }
 
-        gui.start();
+        //gui.start();
 
 
         textUI.displayMessage(products.size()+"");
