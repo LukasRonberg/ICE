@@ -22,5 +22,10 @@ public class TextUi {
         System.out.println(msg);
 
     }
+    public void displayErrorMessage(String msg) {
+
+        System.out.println(msg);
+
+    }
 }
 
