@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class User {
@@ -12,11 +11,15 @@ public class User {
     private ArrayList<String> savedProducts = new ArrayList<>();
 
 
-    public void addRecipeToFavorites()
+    public void addRecipeToFavorites(Recipe recipe)
     {
     }
 
-    public void removeRecipeFromFavorites()
+    public void removeRecipeFromFavorites(Recipe recipe)
     {
+    }
+
+    public ArrayList<Recipe> getSavedRecipes() {
+        return savedRecipes;
     }
 }

@@ -32,4 +32,8 @@ public class Product {
     public String toString() {
         return "Name: " + name + ", weight: " + weight + ", price: " + price + ", product type: " + productType + ", store: " + storeType;
     }
+
+    public double getPrice() {
+        return price;
+    }
 }
