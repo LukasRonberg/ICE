@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 
 public class User {
+    private String username;
+    private String password;
 
-    String Username;
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
-    String Password;
 
     private ArrayList<Recipe> savedRecipes = new ArrayList<>();
 

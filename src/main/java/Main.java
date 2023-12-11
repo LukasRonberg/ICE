@@ -7,7 +7,7 @@ public class Main {
        while (true) {
           StartMenu startMenu = new StartMenu();
           startMenu.display();
-          User currentUser = startMenu.getUserAccount();
+          User user = startMenu.getUserAccount();
        }
 
         //patrickTest();
