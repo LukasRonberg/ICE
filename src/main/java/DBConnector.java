@@ -343,7 +343,6 @@ public class DBConnector {
             stmt.setString(1, "%" + ingredients + "%");
 
             ResultSet results = stmt.executeQuery();
-            System.out.println("Kører mikkels funktion nu: ");
             while (results.next()) {
                 String name = results.getString("name");
                 List<String> ingredient = Arrays.asList(results.getString("ingredients").split(", "));

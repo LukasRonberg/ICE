@@ -1,15 +1,12 @@
 import org.w3c.dom.ranges.Range;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-       while (true) {
-          StartMenu startMenu = new StartMenu();
-          startMenu.display();
-          User user = startMenu.getUserAccount();
-       }
-
+    public static void main(String[] args) throws SQLException {
+        AppFlow app = new AppFlow();
+        app.start();
         //patrickTest();
     }
 
@@ -58,7 +55,7 @@ public class Main {
         for (Product p: test2) {
             textUI.displayMessage("Name: "+p.name +", Price per 100g: "+ (Math.round(p.pricePerGram() * 100.0) / 100.0) +", Price: "+ p.price+", Store: "+ p.storeType);
         }
-        textUI.displayMessage("Total price for this recipe is: "+ recipe.calculateTotalPrice());
+        textUI.displayMessage("Total price for this recipe is: "+ recipe.calculateTotalPrice(products));
         end1 = System.nanoTime();
         textUI.displayMessage("Elapsed Time in nano seconds: "+ (end1-start1));
 
@@ -79,40 +76,5 @@ public class Main {
 
 
     }
-    public static ArrayList<Product> generateDataset(int numEntries) {
-        ArrayList<Product> dataset = new ArrayList<>();
-        Random random = new Random();
-
-        String[] mad = new String[]{"hakket oksekød", "letmælk", "smør", "revet mozzarella", "peberfrugt", "ris",
-                "kyllingebryst", "æg", "tomater", "løg", "gulerødder", "kartofler", "hvedemel", "brød", "bananer",
-                "æbler", "appelsiner", "spinat", "broccoli", "laks", "tunge fløde", "parmesan", "spaghetti",
-                "olivenolie", "hvidløg", "agurk", "ærter", "kiks", "yoghurt", "honning", "avocado", "svinekød", "majs",
-                "grønne bønner", "pølser", "jordnøddesmør", "risengrød", "rosiner", "havregryn", "kaffe", "te",
-                "chokolade", "rugbrød", "solsikkefrø", "is", "rugbrødschips", "koriander", "tomatsauce", "mel", "bønner"
-                , "mayonnaise", "citron", "ost", "æggepasta", "hakket kylling", "taco-skaller", "vaniljeis", "friske bær"
-                , "hakket svinekød", "fløde", "mælk", "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding",
-                "citronsaft", "appelsinjuice", "fiskesauce", "sojasauce", "pasta", "gær", "balsamicoeddike", "røde bønner",
-                "mørk chokolade", "sukker", "kanel", "jordbærmarmelade", "ærtepuré", "kyllingefond", "tun på dåse", "frisk ingefær",
-                "muskatnød", "flødeost", "rucola", "paprika", "rødvin", "hvidvin",
-                "letmælk", "revet mozzarella", "peberfrugt", "agurk", "kiks", "honning", "avocado", "grønne bønner",
-                "pølser", "jordnøddesmør", "rugbrød", "solsikkefrø", "rugbrødschips", "is", "friske bær", "fløde", "mælk",
-                "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding", "citronsaft", "appelsinjuice",
-                "fiskesauce", "sojasauce", "gær", "balsamicoeddike", "røde bønner", "sukker", "jordbærmarmelade", "ærtepuré",
-                "kyllingefond", "tun på dåse", "frisk ingefær", "muskatnød", "rucola", "paprika"};
-
-        for (int i = 0; i < numEntries; i++) {
-            String name = mad[random.nextInt(0, mad.length)];
-            double weight = random.nextInt(50,1000);
-            double price = random.nextInt(5,50);
-            Enums.ProductType productType = Enums.ProductType.MEAT;
-            Enums.StoreType storeType = Enums.StoreType.values()[random.nextInt(Enums.StoreType.values().length)]; // Vælg en tilfældig butikstype
-
-            Product product = new Product(name, (int) weight, price, null, productType, storeType);
-            dataset.add(product);
-        }
-
-        return dataset;
-    }
-
 
 }

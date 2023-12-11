@@ -6,7 +6,7 @@ public class Recipe {
 
     List<String> ingredients;
 
-    //Double TotalPrice;
+    Double TotalPrice;
     private ArrayList<Product> productList = null;
 
 
@@ -15,11 +15,13 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public double calculateTotalPrice(){
+    public double calculateTotalPrice(ArrayList<Product> allProducts){
         double priceCalc = 0;
+        if(productList == null || productList.isEmpty()) findCheapestProductsNewAndBetter(allProducts, null);
         for (Product product: productList) {
             priceCalc += product.price;
         }
+        TotalPrice = priceCalc;
         return priceCalc;
     }
 
@@ -50,6 +52,7 @@ public class Recipe {
         return cheapestProducts;
     }
 
+    // TODO: 11-12-2023 der skal tages hensyn til hvor meget af hver produkt der skal bruges 
     public List<Product> findCheapestProductsNewAndBetter(List<Product> productList, List<String> ingredients) {
         Map<String, Product> cheapestProductMap = new HashMap<>();
 
@@ -142,6 +145,12 @@ public class Recipe {
 
         public ArrayList<Product> getProducts(){
             return products;
+        }
+
+        @Override
+        public String toString() {
+            return "Store name: "+ storeName+", total price per 100g: "+ (Math.round(totalStorePrice * 100.0) / 100.0)
+                    + ", number of wares in store: "+ getProducts().size();
         }
     }
 }
