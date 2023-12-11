@@ -1,7 +1,8 @@
-import javax.naming.Name;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 
 public class DBConnector {
@@ -319,40 +320,45 @@ public class DBConnector {
             return recipes;
         }
     }
-}
-
     // Liste over vores madvarer, i form af en ArrayList
-    public List<Recipe> getRecipeByIngredient(String ingredients) {
+    public List<Recipe> getRecipeByIngredient(String ingredients) throws SQLException {
         List<Recipe> recipeList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
-        // Forsøger at skabe en forbindelse til vores DBConnector
         try {
-            Connection connection = dbConnector.getConnection();
-
-    /* Prøver at erklære et statement, som udfører forbindelsen med SQL, hvilket giver mulighed for, at kunne søge på
-       specifikke ingredienser, som kan forbindes til nøgleord af bestemte ingredienser, og kan sammenlignes med
-       opskrifter mm. Og "?" symbolet skal erstattes med værdien af den søgte ingrediens, for at undgå forvirring */
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM food_items WHERE ingredients "
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            /* Prøver at erklære et statement, som udfører forbindelsen med SQL, hvilket giver mulighed for, at kunne
+             søge på specifikke ingredienser, som kan forbindes til nøgleord af bestemte ingredienser, og kan
+             sammenlignes med opskrifter mm. Og "?" symbolet skal erstattes med værdien af den søgte ingrediens,
+             for at undgå forvirring */
+            stmt = conn.prepareStatement("SELECT * FROM recipe WHERE ingredients "
                     + "LIKE ?");
 
     /* Symbolet "%" giver anledning til, at kunne matche enhver karakter i vores string af ingredienser, og "1" er vores
     indeks af vores parameter, som vi vil forbinde værdien af vores valgte ingrediens */
-            statement.setString(1, "%" + ingredients + "%");
+            stmt.setString(1, "%" + ingredients + "%");
 
-            ResultSet results = statement.executeQuery();
-
+            ResultSet results = stmt.executeQuery();
+            System.out.println("Kører mikkels funktion nu: ");
             while (results.next()) {
-                Recipe recipes = new Recipe("name", Collections.singletonList("ingredients"));
-                recipes.add(recipes);
-            }
+                String name = results.getString("name");
+                List<String> ingredient = Arrays.asList(results.getString("ingredients").split(", "));
+                // du skal bruge disse to variabler
 
+                Recipe recipes = new Recipe(name, ingredient); //hernede
+                recipeList.add(recipes);
+            }
             results.close();
-            statement.close();
-            connection.close();
+            stmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
 
+        }  catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return recipeList;
     }
 }
