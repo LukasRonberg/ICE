@@ -56,6 +56,9 @@ public class AppFlow {
                     currentUser = null;
                     choosingAction = false;
                     break;
+                default:
+                    //errorIsNotAnOption();
+                    break;
             }
         }
 
