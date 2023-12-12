@@ -19,20 +19,54 @@ public class MainMenu {
         allProducts = dbConnector.getProducts();
     }
 
-    public void searchProducts() {
+    public void searchProducts()
+    {
+        String input = ui.getInput("Enter product name:");
+        ArrayList<String> uniqueProductNames = new ArrayList<>();
 
+        for (Product product : allProducts) {
+            if (product.getName().toLowerCase().contains(input.toLowerCase())) {
+                String productName = product.getName();
+                if (!uniqueProductNames.contains(productName)) {
+                    uniqueProductNames.add(productName);
+                }
+            }
+        }
 
+        if (uniqueProductNames.isEmpty()) {
+            ui.displayMessage("No matching products found");
+        } else {
+            ui.displayMessage("Matching products:");
+            int productNumber = 1;
+            for (String productName : uniqueProductNames) {
+                ui.displayMessage(productNumber + ") " + productName);
+                productNumber++;
+            }
 
+            int choice = userChoice(uniqueProductNames.size());
+            if (choice != 0) {
+                String selected = uniqueProductNames.get(choice - 1);
+
+                ui.displayMessage("Stores and Prices for " + selected + ":");
+                for (Product product : allProducts) {
+                    if (product.getName().equalsIgnoreCase(selected)) {
+                        ui.displayMessage("Price: " + product.getPrice() + " - Store: " + product.getStoreType());
+                    }
+                }
+            }
+        }
     }
+
+
 
     public void searchRecipes()
     {
-        String input = ui.getInput("Enter your desired recipe: ");
+        String input = ui.getInput("Enter recipe name: ");
 
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
         for (Recipe recipe : allRecipes)
         {
-            if (recipe.getName().toLowerCase().contains((input.toLowerCase())))
+            if (recipe.getName().toLowerCase().contains(input.toLowerCase()))
             {
                 matchedRecipe.add(recipe);
             }
@@ -145,7 +179,52 @@ public class MainMenu {
 
         }
     }
+    /*private void productChoices(Product selected) {
+        boolean exists = false;
+        String selectResponse;
 
+        for (Product product : currentUser.getSavedProducts()) {
+            if (product.getName().equals(selected.getName())) {
+                exists = true;
+                break;
+            }
+        }
+        label:
+        while(true) {
+            if (exists) {
+                selectResponse = ui.getInput("\t" + selected.getName()
+                        + "Type: "
+                        + selected.getProductType()
+                        + " \n1) Show cheapest store to shop"
+                        + " \n2) Remove recipe from saved recipes"
+                        + " \n3) Return to main menu");
+            } else {
+                selectResponse = ui.getInput("\t" + selected.getName()
+                        + "Type: "
+                        + selected.getProductType()
+                        + " \n1) Show cheapest store to shop"
+                        + " \n2) Save recipe to saved recipes"
+                        + " \n3) Return to main menu");
+            }
+            switch (selectResponse) {
+                case "1":
+                    showCheapestStore(selected);
+                    break;
+                case "2":
+                    if (!exists) {
+                        ui.displayMessage("Added recipe to favorites");
+                        currentUser.addProductToFavorites(selected);
+                    } else {
+                        ui.displayMessage("Removed recipe from favorites");
+                        currentUser.removeProductFromFavorites(selected);
+                    }
+                    break;
+                case "3":
+                    ui.displayMessage("Returning to main menu...");
+                    break label;
+            }
+        }
+    }*/
     private void recipeChoices(Recipe selected) {
         boolean exists = false;
         String selectResponse;

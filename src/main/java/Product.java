@@ -41,4 +41,11 @@ public class Product {
         return name;
     }
 
+    public Enums.ProductType getProductType() {
+        return productType;
+    }
+
+    public Enums.StoreType getStoreType() {
+        return storeType;
+    }
 }
