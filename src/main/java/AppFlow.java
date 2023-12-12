@@ -5,7 +5,7 @@ public class AppFlow {
     DBConnector dbConnector = new DBConnector();
     TextUi textUI = new TextUi();
     MainMenu mainMenu = new MainMenu();
-    User currentUser = null;
+    User currentUser;
 
     public void start(User currentUser) throws SQLException {
         this.currentUser = currentUser;
