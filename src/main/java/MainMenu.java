@@ -4,7 +4,6 @@ import java.util.*;
 public class MainMenu {
     public ArrayList<Recipe> allRecipes;
 
-
     ArrayList<Product> allProducts;
     TextUi ui = new TextUi();
 

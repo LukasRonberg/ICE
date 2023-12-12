@@ -5,12 +5,23 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        AppFlow app = new AppFlow();
-        app.start();
+
+        while (true)
+        {
+            StartMenu startMenu = new StartMenu();
+            startMenu.display();
+
+            User user = startMenu.getUserAccount();
+
+            AppFlow app = new AppFlow();
+            app.start(user);
+        }
+
         //patrickTest();
     }
 
-    public static void patrickTest(){
+    public static void patrickTest()
+    {
         ArrayList<Product> products = new ArrayList<>();
         DBConnector dbConnector = new DBConnector();
         TextUi textUI = new TextUi();

@@ -5,7 +5,7 @@ import java.util.Iterator;
 class StartMenu {
     protected DBConnector dbConnector = new DBConnector();
     protected TextUi textUI = new TextUi();
-    protected User user;
+    protected User currentUser;
     protected final String exit = "exit";
     protected final String goBack = "q";
     protected final String confirm = "y";
@@ -17,209 +17,162 @@ class StartMenu {
         boolean choosingAction = true;
 
         while(choosingAction) {
-            this.textUI.displayMessage("\nSTART MENU:\n1. Login\n2. Create Account\n3. Exit\n");
+            this.textUI.displayMessage("\nSTART MENU:\n1. Login\n2. Create User\n3. Delete User\n4. Exit\n");
             String input = this.chooseMenuOption();
 
             try {
                 int menuOption = Integer.parseInt(input);
                 switch (menuOption) {
                     case 1:
-                        this.login();
+                        this.loginOrDelete("login");
                         break;
                     case 2:
-                        this.createAccount();
+                        this.createUser();
                         break;
                     case 3:
+                        this.loginOrDelete("delete");
+                        break;
+                    case 4:
                         System.exit(0);
                         break;
                     default:
-                        this.errorNotAnOption();
+                        //this.errorNotAnOption();
                 }
 
-                if (this.user != null) {
+                if (this.currentUser != null) {
                     choosingAction = false;
                 }
             } catch (NumberFormatException var4) {
-                this.errorNotANumber();
+                //this.errorNotANumber();
             }
         }
 
     }
 
-    private void login() {
+
+    protected String chooseMenuOption()
+    {
+       return textUI.getInput("Choose menu option : ");
+    }
+
+    private void loginOrDelete(String action)
+    {
         this.dbConnector = new DBConnector();
-        ArrayList<String> data = this.dbConnector.loadAllUsers("");
-        if (!data.isEmpty()) {
-            String[] userData = this.validateUsername(data);
-            if (userData != null) {
-                this.validatePassword(userData);
-            }
-        } else {
-            this.textUi.displayErrorMessage("\nThere's no user accounts.");
-        }
-
-    }
-
-    private String[] validateUsername(ArrayList<String> data) {
-        boolean isValidatingUsername = true;
-        String[] validUser = null;
-
-        while(true) {
-            while(isValidatingUsername) {
-                String typedUsername = this.textUI.getInput("\nInput username or back to start menu (q): ");
+        boolean userTableExist = this.dbConnector.loadAllUsers();
+        boolean isValidatingUserData = true;
+        boolean userExist;
+        if (userTableExist) {
+            while(isValidatingUserData) {
+                String typedUsername = this.textUI.getInput("\nInput username or go back to start menu (q): ");
                 if (typedUsername.equalsIgnoreCase("q")) {
-                    isValidatingUsername = false;
+                    isValidatingUserData = false;
                 } else {
-                    String[] userdata = this.getUserData(data, typedUsername);
-                    if (!userdata[0].isEmpty() && !userdata[1].isEmpty()) {
-                        validUser = new String[]{userdata[0], userdata[1]};
-                        isValidatingUsername = false;
+                    userExist = this.dbConnector.checkUsername(typedUsername);
+                    if (userExist) {
+                        boolean isValidatingPassword = true;
+                        while(isValidatingPassword) {
+                            String typedPassword = this.textUI.getInput("\nInput password or go back to start menu (q): ");
+                            if (!typedPassword.equalsIgnoreCase("q")) {
+                                boolean checkUserPassword = this.dbConnector.checkUserPassword(typedUsername, typedPassword);
+                                if (checkUserPassword) {
+                                    if(action.equals("delete")) {
+                                        boolean deleteUser = dbConnector.deleteUser(typedUsername);
+                                        if(deleteUser) {
+                                            this.textUI.displayErrorMessage("\n"+typedUsername+" has now been deleted from our Database");
+                                            isValidatingPassword = false;
+                                            isValidatingUserData = false;
+                                        }
+                                    } else if(action.equals("login")) {
+                                        this.currentUser = new User(typedUsername, typedPassword);
+                                        isValidatingPassword = false;
+                                        isValidatingUserData = false;
+                                    }
+                                } else if (typedPassword.equalsIgnoreCase("q")) {
+                                    isValidatingPassword = false;
+                                } else {
+                                    this.textUI.displayErrorMessage("\nPassword did not match!");
+                                }
+                            } else {
+                                isValidatingPassword = false;
+                                isValidatingUserData = false;
+                            }
+                        }
                     } else {
                         this.textUI.displayErrorMessage("\nCould not find user.");
                     }
                 }
             }
-
-            return validUser;
-        }
-    }
-
-    private String[] getUserData(ArrayList<String> data, String typedUsername) {
-        String username = "";
-        String password = "";
-        Iterator var5 = data.iterator();
-
-        while(var5.hasNext()) {
-            String s = (String)var5.next();
-            String[] row = s.split(",");
-            String usernameData = row[0];
-            String passwordData = row[1];
-            if (usernameData.equalsIgnoreCase(typedUsername)) {
-                username = usernameData;
-                password = passwordData;
-            }
-        }
-
-        return new String[]{username, password};
-    }
-
-    private void validatePassword(String[] userData) {
-        boolean isValidatingPassword = true;
-
-        while(isValidatingPassword) {
-            String typedPassword = this.textUI.getInput("\nInput password or back to start menu (q): ");
-            if (userData[1].equals(typedPassword)) {
-                this.user = new User(userData[0], userData[1]);
-                isValidatingPassword = false;
-            } else if (typedPassword.equalsIgnoreCase("q")) {
-                isValidatingPassword = false;
-            } else {
-                this.textUI.displayErrorMessage("\nPassword did not match!");
-            }
+        } else {
+            this.textUI.displayErrorMessage("\nThere's no user accounts.");
         }
 
     }
 
-    private void createAccount() {
-        this.dbConnector = new DBConnector();
-        ArrayList<String> data = this.dbConnector.loadAllUsers("");
-        String username = this.createUsername(data);
+    public User getUserAccount()
+    {
+        return this.currentUser;
+    }
+
+
+    private void createUser()
+    {
+        String username = this.createUsername();
         if (!username.isEmpty()) {
             this.createPassword(username);
         }
-
     }
 
-    private String createUsername(ArrayList<String> data) {
+    private String createUsername()
+    {
         String username = "";
         boolean isCreatingUsername = true;
-
         while(isCreatingUsername) {
             String typedUsername = this.textUI.getInput("\nCreate username (Must begin with a letter) or back to start menu (q): ");
             char firstCharacter = typedUsername.charAt(0);
             if (typedUsername.equalsIgnoreCase("q")) {
                 isCreatingUsername = false;
             } else if (!Character.isDigit(firstCharacter)) {
-                boolean userExists = this.doesUserExists(data, typedUsername);
+                boolean userExists = this.dbConnector.checkUsername(typedUsername);
                 if (!userExists) {
                     username = typedUsername;
+                    isCreatingUsername = false;
+                } else if(userExists) {
+                    this.textUI.displayErrorMessage("\n Username exist, try another one!");
                 }
-
-                isCreatingUsername = false;
             } else {
-                this.textUI.displayErrorMessage("\nMust begin with a letter!");
+                this.textUI.displayErrorMessage("\nUsername must begin with a letter!");
             }
         }
-
         return username;
     }
 
-    private void createPassword(String username) {
+    private void createPassword(String username)
+    {
         boolean isCreatingPassword = true;
-
-        while(isCreatingPassword) {
-            String password = this.textUI.getInput("\nCreate password (Minimum 8 characters) or back to start menu (q): ");
-            if (password.length() >= 8) {
+        while(isCreatingPassword)
+        {
+            String password = this.textUI.getInput("\nCreate password (Minimum 8 characters) or (q) to go back to start menu: ");
+            if (password.length() >= 8)
+            {
                 this.dbConnector = new DBConnector();
-                boolean userSavedToFile = this.dbConnector.saveUserData("", username, password);
+                boolean userSavedToFile = this.dbConnector.saveUserData(username, password);
                 if (!userSavedToFile) {
-                    this.textUI.displayMessage("\nCould not create an account.");
+                    this.textUI.displayMessage("\nCould not create an user-account. Try again later!");
                 } else {
-                    String answer = this.textUI.getInput("\nYou have now created an account. Log in? Y/N: ");
-                    if (answer.equalsIgnoreCase("y")) {
-                        this.user = new User(username, password);
+                    String option = this.textUI.getInput("\nYou have now created an account. Log in? Y/N: ");
+                    if (option.equalsIgnoreCase("y")) {
+                        this.currentUser = new User(username, password);
                     }
                 }
-
                 isCreatingPassword = false;
             } else if (password.equalsIgnoreCase("q")) {
                 isCreatingPassword = false;
             } else {
-                this.textUI.displayErrorMessage("\nMust be minimum 8 characters long!");
+                this.textUI.displayErrorMessage("\nPassword must be minimum 8 characters long!");
             }
         }
-
     }
 
-    private boolean doesUserExists(ArrayList<String> data, String username) {
-        boolean userExists = false;
-        String[] userData = this.getUserData(data, username);
-        if (!userData[0].isEmpty()) {
-            userExists = true;
-        }
-
-        if (userExists) {
-            String answer = this.textUI.getInput("\nUsername already exists. Do you want to login? Y/N: ");
-            if (answer.equalsIgnoreCase("y")) {
-                this.validatePassword(userData);
-            } else {
-                this.textUI.displayMessage("\nReturning you to Start Menu.");
-            }
-        }
-
-        return userExists;
-    }
-
-    public User getUserAccount() {
-        return this.user;
-    }
-
-    protected String chooseMenuOption() {
-        return this.textUI.getInput("Choose menu option : ");
-    }
-
-    protected String chooseOption() {
-        return this.textUI.getInput("\nChoose option or go back (q): ");
-    }
-
-    protected void errorNotAnOption() {
-        this.textUI.displayErrorMessage("\nNot an option!");
-    }
-
-    protected void errorNotANumber() {
-        this.textUI.displayErrorMessage("\nChoose a number!");
-    }
 }
-
 
 

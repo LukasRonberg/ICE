@@ -23,9 +23,9 @@ public class TextUi {
 
     }
     public void displayErrorMessage(String msg) {
-
-        System.out.println(msg);
-
+        String RED = "\u001B[31m";
+        String RESET = "\u001B[0m";
+        System.out.println(RED + msg + RESET);
     }
 }
 

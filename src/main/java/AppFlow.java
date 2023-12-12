@@ -4,12 +4,11 @@ import java.util.ArrayList;
 public class AppFlow {
     DBConnector dbConnector = new DBConnector();
     TextUi textUI = new TextUi();
-    StartMenu startMenu = new StartMenu();
     MainMenu mainMenu = new MainMenu();
-
     User currentUser = null;
 
-    public void start() throws SQLException {
+    public void start(User currentUser) throws SQLException {
+        this.currentUser = currentUser;
         /*while (true) {
             startMenu.display();
             if (startMenu.getUserAccount() != null) {
@@ -20,8 +19,11 @@ public class AppFlow {
 
         mainMenu.allProducts = dbConnector.getProducts();
         mainMenu.allRecipes = dbConnector.getRecipes();
-        mainMenu.currentUser = new User("Lars", "Tissemand");
-        while (true) {
+        mainMenu.currentUser = currentUser; //new User("Lars", "Tissemand");
+        textUI.displayMessage("\n*** Welcome " + currentUser.getUsername() + "! ***");
+
+        boolean choosingAction = true;
+        while (choosingAction) {
             String userInput = textUI.getInput("Press Any of the following keys:" +
                     "\n1. Search by product name" +
                     "\n2. Search recipes by name" +
@@ -51,6 +53,8 @@ public class AppFlow {
                     mainMenu.getSavedRecipes();
                     break;
                 case "7":
+                    currentUser = null;
+                    choosingAction = false;
                     break;
             }
         }
