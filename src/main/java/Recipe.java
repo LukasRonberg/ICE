@@ -52,7 +52,7 @@ public class Recipe {
         return cheapestProducts;
     }
 
-    // TODO: 11-12-2023 der skal tages hensyn til hvor meget af hver produkt der skal bruges 
+    // TODO: 11-12-2023 der skal tages hensyn til hvor meget af hver produkt der skal bruges
     public List<Product> findCheapestProductsNewAndBetter(List<Product> productList, List<String> ingredients) {
         Map<String, Product> cheapestProductMap = new HashMap<>();
 

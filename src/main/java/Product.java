@@ -36,4 +36,9 @@ public class Product {
     public double getPrice() {
         return price;
     }
+
+    public String getName() {
+        return name;
+    }
+
 }

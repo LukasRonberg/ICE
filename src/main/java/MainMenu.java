@@ -20,12 +20,41 @@ public class MainMenu {
     }
 
     public void searchProducts() {
+
+
+
     }
 
-    public void searchRecipes() {
+    public void searchRecipes()
+    {
+        String input = ui.getInput("Enter your desired recipe: ");
+
+        ArrayList<Recipe> matchedRecipe = new ArrayList<>();
+        for (Recipe recipe : allRecipes)
+        {
+            if (recipe.getName().toLowerCase().contains((input.toLowerCase())))
+            {
+                matchedRecipe.add(recipe);
+            }
+        }
+            if(!matchedRecipe.isEmpty())
+            {
+                for(int i = 0; i < matchedRecipe.size() ;i++)
+                {
+                    ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName());
+                }
+                int choice = userChoice(matchedRecipe.size());
+                Recipe selected = matchedRecipe.get(choice - 1);
+                recipeChoices(selected);
+            } else
+            {
+                ui.displayMessage("Try again");
+            }
+
+
     }
 
-    // TODO: 11-12-2023 tilføj funktionalitet til at søge på et delvist ord og spørg om det var dette der blev ment 
+    // TODO: 11-12-2023 tilføj funktionalitet til at søge på et delvist ord og spørg om det var dette der blev ment
     public void searchByIngrediens() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a desired ingredient: ");
