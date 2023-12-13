@@ -85,7 +85,7 @@ class StartMenu {
                                             isValidatingUserData = false;
                                         }
                                     } else if(action.equals("login")) {
-                                        ArrayList<String> favoriteProducts = dbConnector.getfavoriteProducts(typedUsername);
+                                        ArrayList<String> favoriteProducts = dbConnector.getFavoriteProducts(typedUsername);
                                         this.currentUser = new User(typedUsername, typedPassword,favoriteProducts);
                                         isValidatingPassword = false;
                                         isValidatingUserData = false;
