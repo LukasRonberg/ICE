@@ -495,49 +495,7 @@ public class DBConnector {
         }
         return insertCompleted;
     }
-    public boolean insertNewFoodProducts(Product productToInsert) {
-        boolean insertCompleted = false;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        MainMenu mainMenu = new MainMenu();
-        ArrayList<Product> newProductList = mainMenu.generateNewProductList();
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            for(Product p: newProductList)
-            {
-                System.out.println("Product: " + p.name + " Store: " + p.storeType + " Weight: " + p.weight + " Price: " + p.price);
-                String sql = "INSERT INTO products (name, store, weight, price, image, type) VALUES ('" + p.name + "', '"
-                        + p.storeType + "', '" + p.weight + "', '" + p.price +
-                        "', '" + p.image + "', '" + p.productType + "')";
-                stmt = conn.prepareStatement(sql);
-                stmt.executeUpdate(sql);
-            }
-            stmt.close();
-            conn.close();
-            insertCompleted = true;
-        } catch (SQLException var23) {
-            var23.printStackTrace();
-        } catch (Exception var24) {
-            var24.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException var22) {
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException var21) {
-                var21.printStackTrace();
-            }
-        }
-        return insertCompleted;
-    }
 
     public ArrayList<String> getFavoriteProducts(String userName) {
             Connection conn = null;

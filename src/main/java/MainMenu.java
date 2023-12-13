@@ -294,6 +294,29 @@ public class MainMenu {
         }
     }
 
+    public static ArrayList<Product> generateNewProductList() {
+        DBConnector dbConnector = new DBConnector();
+        ArrayList<Product> productList = new ArrayList<>();
+        ArrayList<Product> oldProductList = dbConnector.getNewProducts();
+        Random random = new Random();
+
+        for (Product p: oldProductList) {
+            for(int j = 0; j < Enums.StoreType.values().length; j++) {
+                String name = p.name;
+                int weight = p.weight;
+                int price1 = (int) (((p.price*20/100)+1)*-1);
+                int price2 = (int) (p.price*20/100)+1;
+                double price = p.price-(random.nextInt(price1,price2));
+                Enums.ProductType productType = p.productType;
+                Enums.StoreType storeType = Enums.StoreType.values()[j];
+                Product product = new Product(name, (int) weight, price, null, productType, storeType);
+                productList.add(product);
+            }
+        }
+        return productList;
+    }
+
+
     public void showCheapestStore(Recipe selected) {
         // TODO: 11-12-2023 skal have mulighed for at vælge en butik og se produkter
         ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);

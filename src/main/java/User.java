@@ -4,17 +4,20 @@ public class User {
     private String username;
     private String password;
 
-    public User(String username, String password) {
+    private ArrayList<String> savedRecipes = new ArrayList<>();
+
+    private ArrayList<String> savedProducts;
+
+
+    public User(String username, String password, ArrayList<String> savedProducts) {
         this.username = username;
         this.password = password;
+        this.savedProducts = savedProducts;
     }
     public String getUsername() {
         return this.username;
     }
 
-    private ArrayList<String> savedRecipes = new ArrayList<>();
-
-    private ArrayList<String> savedProducts = new ArrayList<>();
 
 
     public void addRecipeToFavorites(Recipe recipe)

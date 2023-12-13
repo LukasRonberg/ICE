@@ -12,6 +12,16 @@ public class Main {
         //patrickTest();
     }
 
+    public static void generateProductList() {
+        boolean insertResult = false;
+        DBConnector dbConnector = new DBConnector();
+        MainMenu mainMenu = new MainMenu();
+        ArrayList<Product> newProductList = mainMenu.generateNewProductList();
+        dbConnector.insertAllFoodProducts(newProductList);
+    }
+
+
+
     public static void patrickTest() {
         ArrayList<Product> products = new ArrayList<>();
         DBConnector dbConnector = new DBConnector();
