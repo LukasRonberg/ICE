@@ -30,7 +30,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Name: " + name + ", weight: " + weight + ", price: " + price + ", product type: " + productType + ", store: " + storeType;
+        return name + ", Weight: " + weight + "g, Price: " + price + "DKK, Price per 100g: " + (Math.round(pricePerGram() * 100.0) / 100.0) + /*", product type: " + productType +*/ "DKK, Store: " + storeType;
     }
 
     public double getPrice() {

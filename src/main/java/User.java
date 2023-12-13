@@ -12,7 +12,7 @@ public class User {
         return this.username;
     }
 
-    private ArrayList<Recipe> savedRecipes = new ArrayList<>();
+    private ArrayList<String> savedRecipes = new ArrayList<>();
 
     private ArrayList<String> savedProducts = new ArrayList<>();
 
@@ -25,7 +25,11 @@ public class User {
     {
     }
 
-    public ArrayList<Recipe> getSavedRecipes() {
+    public ArrayList<String> getSavedRecipes() {
         return savedRecipes;
+    }
+
+    public ArrayList<String> getSavedProducts() {
+        return savedProducts;
     }
 }
