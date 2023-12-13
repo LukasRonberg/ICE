@@ -512,7 +512,7 @@ public class DBConnector {
                     //Retrieve by column username
                     String user = rs.getString("username");
                     String products = rs.getString("favoriteProducts");
-                    if (userName.equals(user)) {
+                    if (userName.equals(user) && products != null) {
                         String[] productsSplitted = products.split(",");
                         for (String p : productsSplitted) {
                             favoriteProducts.add(p.trim());
@@ -563,7 +563,7 @@ public class DBConnector {
                 //Retrieve by column username
                 String user = rs.getString("username");
                 String recipes = rs.getString("favoriteRecipes");
-                if (userName.equals(user)) {
+                if (userName.equals(user) && recipes != null) {
                     String[] recipesSplitted = recipes.split(",");
                     for (String p : recipesSplitted) {
                         favoriteRecipes.add(p.trim());
