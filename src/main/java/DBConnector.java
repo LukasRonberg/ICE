@@ -547,18 +547,73 @@ public class DBConnector {
             return favoriteProducts;
         }
 
-    public boolean saveFavoriteProductList(String username, ArrayList<String> favoriteproducts) {
+
+    public ArrayList<String> getFavoriteRecipes(String userName) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ArrayList<String> favoriteRecipes = new ArrayList<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "SELECT * FROM user";
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                //Retrieve by column username
+                String user = rs.getString("username");
+                String recipes = rs.getString("favoriteRecipes");
+                if (userName.equals(user)) {
+                    String[] recipesSplitted = recipes.split(",");
+                    for (String p : recipesSplitted) {
+                        favoriteRecipes.add(p.trim());
+                    }
+                }
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException var25) {
+            var25.printStackTrace();
+        } catch (Exception var26) {
+            var26.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var24) {
+            }
+
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var23) {
+                var23.printStackTrace();
+            }
+
+        }
+        return favoriteRecipes;
+    }
+
+    public boolean saveFavoriteLists(String username, ArrayList<String> favoriteproducts, ArrayList<String> favoriterecipes) {
         boolean favoriteListSaved = false;
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String favorites = "";
+            String favoriteprod = "";
+            String favoriterecip = "";
             for(String p: favoriteproducts) {
-                favorites = favorites+p+",";
+                favoriteprod = favoriteprod+p+",";
             }
-            String sql = "UPDATE user SET favoriteProducts = '"+favorites+"' WHERE username = '"+username+"'";
+            for(String r: favoriterecipes) {
+                favoriterecip = favoriterecip+r+",";
+            }
+            String sql = "UPDATE user SET favoriteProducts = '"+favoriteprod+"', favoriteRecipes = '"+favoriterecip+"' WHERE username = '"+username+"'";
             stmt = conn.prepareStatement(sql);
             stmt.executeUpdate(sql);
             stmt.close();

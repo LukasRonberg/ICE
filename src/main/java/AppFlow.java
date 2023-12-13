@@ -51,7 +51,7 @@ public class AppFlow {
                     mainMenu.getSavedRecipes();
                     break;
                 case "0":
-                    dbConnector.saveFavoriteProductList(currentUser.getUsername(), currentUser.getSavedProducts());
+                    dbConnector.saveFavoriteLists(currentUser.getUsername(), currentUser.getSavedProducts(), currentUser.getSavedRecipes());
                     currentUser = null;
                     choosingAction = false;
                     break;

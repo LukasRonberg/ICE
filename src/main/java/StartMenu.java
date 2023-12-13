@@ -7,6 +7,7 @@ class StartMenu {
     protected TextUi textUI = new TextUi();
     protected User currentUser;
     private ArrayList<String> favoriteProducts = new ArrayList<>();
+    private ArrayList<String> favoriteRecipes = new ArrayList<>();
     protected final String exit = "exit";
     protected final String goBack = "q";
     protected final String confirm = "y";
@@ -85,7 +86,8 @@ class StartMenu {
                                         }
                                     } else if(action.equals("login")) {
                                         ArrayList<String> favoriteProducts = dbConnector.getFavoriteProducts(typedUsername);
-                                        this.currentUser = new User(typedUsername, typedPassword,favoriteProducts);
+                                        ArrayList<String> favoriteRecipes = dbConnector.getFavoriteRecipes(typedUsername);
+                                        this.currentUser = new User(typedUsername, typedPassword,favoriteProducts, favoriteRecipes);
                                         isValidatingPassword = false;
                                         isValidatingUserData = false;
                                     }
@@ -163,7 +165,7 @@ class StartMenu {
                 } else {
                     String option = this.textUI.getInput("\nYou have now created an account. Log in? Y/N: ");
                     if (option.equalsIgnoreCase("y")) {
-                        this.currentUser = new User(username, password, favoriteProducts);
+                        this.currentUser = new User(username, password, favoriteProducts, favoriteRecipes);
                     }
                 }
                 isCreatingPassword = false;
