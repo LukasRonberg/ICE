@@ -513,7 +513,7 @@ public class DBConnector {
                     String user = rs.getString("username");
                     String products = rs.getString("favoriteProducts");
                     if (userName.equals(user)) {
-                        String[] productsSplitted = products.split(",", -1);
+                        String[] productsSplitted = products.split(",");
                         for (String p : productsSplitted) {
                             favoriteProducts.add(p.trim());
                         }
@@ -546,4 +546,45 @@ public class DBConnector {
             }
             return favoriteProducts;
         }
+
+    public boolean saveFavoriteProductList(String username, ArrayList<String> favoriteproducts) {
+        boolean favoriteListSaved = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String favorites = "";
+            for(String p: favoriteproducts) {
+                favorites = favorites+p+",";
+            }
+            String sql = "UPDATE user SET favoriteProducts = '"+favorites+"' WHERE username = '"+username+"'";
+            stmt = conn.prepareStatement(sql);
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.close();
+            favoriteListSaved  = true;
+        } catch (SQLException var23) {
+            var23.printStackTrace();
+        } catch (Exception var24) {
+            var24.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var22) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var21) {
+                var21.printStackTrace();
+            }
+        }
+        return favoriteListSaved;
+    }
+
+
 }
