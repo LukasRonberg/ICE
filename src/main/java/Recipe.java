@@ -30,29 +30,7 @@ public class Recipe {
         return "Name: " + name + ", ingredients: " + ingredients;
     }
 
-    //Gammel ikke brug - den er blot her for at vise forskel på hurtighed
-    public ArrayList<Product> findCheapestProducts(ArrayList<Product> productList)
-    {
-        ArrayList<Product> cheapestProducts = new ArrayList<>();
-        for (String ingredient : ingredients) {
-            for (Product product: productList) {
-                if(ingredient.equals(product.name) && !cheapestProducts.isEmpty()){
-                    for (Product priceCompare:cheapestProducts) {
-                        if(product.pricePerGram() < priceCompare.pricePerGram()){
-                            cheapestProducts.add(product);
-                            cheapestProducts.remove(priceCompare);
-                        }
-                    }
-                } else if(ingredient.equals(product.name)){
-                    cheapestProducts.add(product);
-                }
-            }
-        }
-        this.productList = cheapestProducts;
-        return cheapestProducts;
-    }
-
-    // TODO: 11-12-2023 der skal tages hensyn til hvor meget af hver produkt der skal bruges 
+    // TODO: 11-12-2023 der skal tages hensyn til hvor meget af hver produkt der skal bruges
     public List<Product> findCheapestProductsNewAndBetter(List<Product> productList, List<String> ingredients) {
         Map<String, Product> cheapestProductMap = new HashMap<>();
 

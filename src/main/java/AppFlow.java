@@ -7,15 +7,13 @@ public class AppFlow {
     MainMenu mainMenu = new MainMenu();
     User currentUser;
 
-    public void start(User currentUser) throws SQLException {
-        this.currentUser = currentUser;
-        /*while (true) {
-            startMenu.display();
-            if (startMenu.getUserAccount() != null) {
-                currentUser = startMenu.getUserAccount();
-                break;
-            }
-        }*/
+    public void start() throws SQLException {
+        //this.currentUser = currentUser;
+        StartMenu startMenu = new StartMenu();
+        startMenu.display();
+
+        currentUser = startMenu.getUserAccount();
+
 
         mainMenu.allProducts = dbConnector.getProducts();
         mainMenu.allRecipes = dbConnector.getRecipes();
@@ -25,13 +23,13 @@ public class AppFlow {
         boolean choosingAction = true;
         while (choosingAction) {
             String userInput = textUI.getInput("Press Any of the following keys:" +
-                    "\n1. Search by product name" +
+                    "\n1. Search products by name" +
                     "\n2. Search recipes by name" +
                     "\n3. Search recipes by ingredient" +
                     "\n4. Search recipes by budget" +
                     "\n5. View saved products" +
                     "\n6. View saved recipes" +
-                    "\n7. Quit");
+                    "\n0. Quit");
 
             switch (userInput) {
                 case "1":
@@ -52,13 +50,13 @@ public class AppFlow {
                 case "6":
                     mainMenu.getSavedRecipes();
                     break;
-                case "7":
+                case "0":
                     currentUser = null;
                     choosingAction = false;
                     break;
-                default:
-                    //errorIsNotAnOption();
-                    break;
+                //default:
+                //errorIsNotAnOption();
+                //break;
             }
         }
 

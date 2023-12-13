@@ -18,7 +18,7 @@ class StartMenu {
         boolean choosingAction = true;
 
         while(choosingAction) {
-            this.textUI.displayMessage("\nSTART MENU:\n1. Login\n2. Create User\n3. Delete User\n4. Exit\n");
+            this.textUI.displayMessage("\nSTART MENU:\n1. Login\n2. Create User\n3. Delete User\n0. Exit\n");
             String input = this.chooseMenuOption();
 
             try {
@@ -33,10 +33,9 @@ class StartMenu {
                     case 3:
                         this.loginOrDelete("delete");
                         break;
-                    case 4:
+                    case 0:
                         System.exit(0);
                         break;
-                    default:
                         //this.errorNotAnOption();
                 }
 
