@@ -3,19 +3,19 @@ import java.util.ArrayList;
 public class User {
     private String username;
     private String password;
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-    public String getUsername() {
-        return this.username;
-    }
+    private ArrayList<String> savedProducts;
 
     private ArrayList<Recipe> savedRecipes = new ArrayList<>();
 
-    private ArrayList<String> savedProducts = new ArrayList<>();
-
+    public User(String username, String password, ArrayList<String> savedProducts) {
+        this.username = username;
+        this.password = password;
+        this.savedProducts = savedProducts;
+    }
+    public String getUsername()
+    {
+        return this.username;
+    }
 
     public void addRecipeToFavorites(Recipe recipe)
     {
@@ -25,7 +25,13 @@ public class User {
     {
     }
 
-    public ArrayList<Recipe> getSavedRecipes() {
+    public ArrayList<Recipe> getSavedRecipes()
+    {
         return savedRecipes;
+    }
+
+    public ArrayList<String> getSavedProducts()
+    {
+        return savedProducts;
     }
 }

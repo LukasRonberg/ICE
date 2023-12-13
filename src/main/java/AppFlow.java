@@ -47,7 +47,7 @@ public class AppFlow {
                     mainMenu.searchRecipesByBudget();
                     break;
                 case "5":
-                    mainMenu.getSavedProducts();
+                    mainMenu.getSavedProducts(currentUser.getUsername());
                     break;
                 case "6":
                     mainMenu.getSavedRecipes();

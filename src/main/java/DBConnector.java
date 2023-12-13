@@ -7,6 +7,7 @@ import java.util.List;
 
 public class DBConnector {
     private final String DB_URL = "jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db";
+    private final String DB2_URL = "jdbc:mysql://mysql47.unoeuro.com:3306/thegreenway_dk_db_sikkerhed";
     private final String USER = "thegreenway_dk";
     private final String PASS = "TheBlueMan45";
 
@@ -228,6 +229,57 @@ public class DBConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "SELECT * FROM products";
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                //Retrieve by column name
+                //int productID = rs.getInt("productID");
+                String name = rs.getString("name");
+                Enums.StoreType storeType = Enums.StoreType.valueOf(rs.getString("store"));
+                int weight = rs.getInt("weight");
+                double price = rs.getInt("price");
+                String image = rs.getString("image");
+                Enums.ProductType productType = Enums.ProductType.valueOf(rs.getString("type"));
+                products.add(new Product(name, weight, price, image, productType, storeType));
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException var25) {
+            var25.printStackTrace();
+        } catch (Exception var26) {
+            var26.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var24) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var23) {
+                var23.printStackTrace();
+            }
+
+        }
+
+        return products;
+    }
+
+    public ArrayList<Product> getNewProducts() {
+        ArrayList<Product> products = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB2_URL, USER, PASS);
             String sql = "SELECT * FROM product";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
@@ -270,6 +322,7 @@ public class DBConnector {
 
         return products;
     }
+
 
     public ArrayList<Recipe> getRecipes() {
         ArrayList<Recipe> recipes = new ArrayList<>();
@@ -401,5 +454,138 @@ public class DBConnector {
         return insertCompleted;
     }
 
+    public boolean insertAllFoodProducts(ArrayList<Product> newProductList) {
+        boolean insertCompleted = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            System.out.println("The product-table are being created.....");
+            for(Product p: newProductList)
+            {
+               String sql = "INSERT INTO products (name, store, weight, price, image, type) VALUES ('" + p.name + "', '"
+                        + p.storeType + "', '" + p.weight + "', '" + p.price +
+                        "', '" + p.image + "', '" + p.productType + "')";
+                stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate(sql);
+            }
+            System.out.println("The product-table has been successfully created.....");
+            stmt.close();
+            conn.close();
+            insertCompleted = true;
+        } catch (SQLException var23) {
+            var23.printStackTrace();
+        } catch (Exception var24) {
+            var24.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var22) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var21) {
+                var21.printStackTrace();
+            }
+        }
+        return insertCompleted;
+    }
+    public boolean insertNewFoodProducts(Product productToInsert) {
+        boolean insertCompleted = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        MainMenu mainMenu = new MainMenu();
+        ArrayList<Product> newProductList = mainMenu.generateNewProductList();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            for(Product p: newProductList)
+            {
+                System.out.println("Product: " + p.name + " Store: " + p.storeType + " Weight: " + p.weight + " Price: " + p.price);
+                String sql = "INSERT INTO products (name, store, weight, price, image, type) VALUES ('" + p.name + "', '"
+                        + p.storeType + "', '" + p.weight + "', '" + p.price +
+                        "', '" + p.image + "', '" + p.productType + "')";
+                stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate(sql);
+            }
+            stmt.close();
+            conn.close();
+            insertCompleted = true;
+        } catch (SQLException var23) {
+            var23.printStackTrace();
+        } catch (Exception var24) {
+            var24.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var22) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var21) {
+                var21.printStackTrace();
+            }
+        }
+        return insertCompleted;
+    }
+
+    public ArrayList<String> getFavoriteProducts(String userName) {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ArrayList<String> favoriteProducts = new ArrayList<>();
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+                String sql = "SELECT * FROM user";
+                stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery(sql);
+
+                while (rs.next()) {
+                    //Retrieve by column username
+                    String user = rs.getString("username");
+                    String products = rs.getString("favoriteProducts");
+                    if (userName.equals(user)) {
+                        String[] productsSplitted = products.split(",", -1);
+                        for (String p : productsSplitted) {
+                            favoriteProducts.add(p.trim());
+                        }
+                    }
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException var25) {
+                var25.printStackTrace();
+            } catch (Exception var26) {
+                var26.printStackTrace();
+            } finally {
+                try {
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                } catch (SQLException var24) {
+                }
+
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException var23) {
+                    var23.printStackTrace();
+                }
+
+            }
+            return favoriteProducts;
+        }
 }

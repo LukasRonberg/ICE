@@ -6,6 +6,7 @@ class StartMenu {
     protected DBConnector dbConnector = new DBConnector();
     protected TextUi textUI = new TextUi();
     protected User currentUser;
+    private ArrayList<String> favoriteProducts = new ArrayList<>();
     protected final String exit = "exit";
     protected final String goBack = "q";
     protected final String confirm = "y";
@@ -61,6 +62,7 @@ class StartMenu {
         boolean userTableExist = this.dbConnector.loadAllUsers();
         boolean isValidatingUserData = true;
         boolean userExist;
+
         if (userTableExist) {
             while(isValidatingUserData) {
                 String typedUsername = this.textUI.getInput("\nInput username or go back to start menu (q): ");
@@ -83,7 +85,8 @@ class StartMenu {
                                             isValidatingUserData = false;
                                         }
                                     } else if(action.equals("login")) {
-                                        this.currentUser = new User(typedUsername, typedPassword);
+                                        ArrayList<String> favoriteProducts = dbConnector.getfavoriteProducts(typedUsername);
+                                        this.currentUser = new User(typedUsername, typedPassword,favoriteProducts);
                                         isValidatingPassword = false;
                                         isValidatingUserData = false;
                                     }
@@ -161,7 +164,7 @@ class StartMenu {
                 } else {
                     String option = this.textUI.getInput("\nYou have now created an account. Log in? Y/N: ");
                     if (option.equalsIgnoreCase("y")) {
-                        this.currentUser = new User(username, password);
+                        this.currentUser = new User(username, password, favoriteProducts);
                     }
                 }
                 isCreatingPassword = false;
