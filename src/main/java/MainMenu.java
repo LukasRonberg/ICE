@@ -286,6 +286,7 @@ public class MainMenu {
                         ui.displayMessage("Removed recipe from favorites");
                         currentUser.getSavedRecipes().remove(selected.getName());
                     }
+                    exists = true;
                     break;
                 case "0":
                     ui.displayMessage("Returning to main menu...");
