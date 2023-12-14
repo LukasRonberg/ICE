@@ -1,7 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -371,11 +370,11 @@ public class DBConnector {
                 var23.printStackTrace();
             }
 
-
             return recipes;
         }
     }
     // Liste over vores madvarer, i form af en ArrayList
+    //TODO Listen skal præsenteret ordentligt overfor brugeren, så vedkommende kan vælge, ligesom i search recipes
     public List<Recipe> getRecipeByIngredient(String ingredients) throws SQLException {
         List<Recipe> recipeList = new ArrayList<>();
         Connection conn = null;
@@ -394,15 +393,32 @@ public class DBConnector {
     /* Symbolet "%" giver anledning til, at kunne matche enhver karakter i vores string af ingredienser, og "1" er vores
     indeks af vores parameter, som vi vil forbinde værdien af vores valgte ingrediens */
             stmt.setString(1, "%" + ingredients + "%");
-
             ResultSet results = stmt.executeQuery();
-            while (results.next()) {
-                String name = results.getString("name");
-                List<String> ingredient = Arrays.asList(results.getString("ingredients").split(", "));
-                // du skal bruge disse to variabler
 
-                Recipe recipes = new Recipe(name, ingredient); //hernede
-                recipeList.add(recipes);
+            if (!results.next()) {
+                // Ingredient does not exist
+                System.out.println("Ingredient " + ingredients + " is currently out of stock. Please try another one.");
+            } else {
+                while (results.next()) {
+                    String name = results.getString("name");
+                    List<String> ingredient = Arrays.asList(results.getString("ingredients").split(", "));
+
+                    Recipe recipes = new Recipe(name, ingredient);
+                    recipeList.add(recipes);
+                }
+
+                //TODO Denne del prøver at opsætte vores recipes ud fra users valg, men derimod så forsvinder
+                // ingredienserne fra vores valgmuligheder(?)
+                /*
+                System.out.println("Select a recipe from the following options:");
+                for (int i = 0; i < recipeList.size(); i++) {
+                    System.out.println(i + 1 + ". " + recipeList.get(i).getName());
+                }
+                int choice = Integer.parseInt(System.console().readLine());
+
+                // Return the selected recipe
+                return (List<Recipe>) recipeList.get(choice - 1);
+                 */
             }
             results.close();
             stmt.close();
@@ -414,6 +430,9 @@ public class DBConnector {
             throw new RuntimeException(e);
         }
         return recipeList;
+    }
+    public List<Recipe> recipeOptions(List<Recipe> recipeOptions) {
+        return recipeOptions;
     }
 
     public boolean insertFoodProducts(Product productToInsert) {

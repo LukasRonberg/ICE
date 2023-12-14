@@ -242,7 +242,7 @@ public class MainMenu {
             }
         }
     }*/
-    private void recipeOptions(Recipe selected) {
+    public void recipeOptions(Recipe selected) {
         boolean exists = false;
         String selectResponse;
 
