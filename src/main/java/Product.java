@@ -2,8 +2,7 @@
 
 public class Product {
     public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType) {
-        char firstLetter = Character.toUpperCase(name.charAt(0));
-        this.name = firstLetter+name.substring(1);
+        this.name = name;
         this.weight = weight;
         this.price = price;
         this.image = image;
