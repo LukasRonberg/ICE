@@ -340,7 +340,7 @@ public class MainMenu {
         if(selection.equals("0")) return;
         while (true) {
             try {
-                var store = stores.get(Integer.parseInt(selection));
+                var store = stores.get(Integer.parseInt(selection)-1);
                 for (Product p: store.getProducts()) {
                     ui.displayMessage(p.toString());
                 };
