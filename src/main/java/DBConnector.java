@@ -497,10 +497,10 @@ public class DBConnector {
     }
 
 
-    public ArrayList<String> getFavoriteProducts(String userName) {
+    public ArrayList<String> getFavoriteList(String userName, String list) {
             Connection conn = null;
             PreparedStatement stmt = null;
-            ArrayList<String> favoriteProducts = new ArrayList<>();
+            ArrayList<String> favoriteList = new ArrayList<>();
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -512,10 +512,20 @@ public class DBConnector {
                     //Retrieve by column username
                     String user = rs.getString("username");
                     String products = rs.getString("favoriteProducts");
-                    if (userName.equals(user) && products != null) {
-                        String[] productsSplitted = products.split(",");
-                        for (String p : productsSplitted) {
-                            favoriteProducts.add(p.trim());
+                    String recipes = rs.getString("favoriteRecipes");
+                    if(list.equals("products")) {
+                        if (userName.equals(user) && products != null) {
+                            String[] productsSplitted = products.split(",");
+                            for (String p : productsSplitted) {
+                                favoriteList.add(p.trim());
+                            }
+                        }
+                    } else if(list.equals("recipes")) {
+                        if (userName.equals(user) && recipes != null) {
+                            String[] recipesSplitted = recipes.split(",");
+                            for (String p : recipesSplitted) {
+                                favoriteList.add(p.trim());
+                            }
                         }
                     }
                 }
@@ -544,7 +554,7 @@ public class DBConnector {
                 }
 
             }
-            return favoriteProducts;
+            return favoriteList;
         }
 
 

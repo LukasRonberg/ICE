@@ -8,12 +8,13 @@ public class Main {
         AppFlow app = new AppFlow();
         app.start();
 
-
         //patrickTest();
     }
 
+    /** this methode generates a new table of Products by importing a raw product table of all our products
+     * and generating a ransom price(-15 to 15% of the average price) for each of our stores
+     */
     public static void generateProductList() {
-        boolean insertResult = false;
         DBConnector dbConnector = new DBConnector();
         MainMenu mainMenu = new MainMenu();
         ArrayList<Product> newProductList = mainMenu.generateNewProductList();

@@ -1,6 +1,4 @@
-import java.util.HashSet;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 class StartMenu {
     protected DBConnector dbConnector = new DBConnector();
@@ -8,9 +6,6 @@ class StartMenu {
     protected User currentUser;
     private ArrayList<String> favoriteProducts = new ArrayList<>();
     private ArrayList<String> favoriteRecipes = new ArrayList<>();
-    protected final String exit = "exit";
-    protected final String goBack = "q";
-    protected final String confirm = "y";
 
     StartMenu() {
     }
@@ -85,9 +80,9 @@ class StartMenu {
                                             isValidatingUserData = false;
                                         }
                                     } else if(action.equals("login")) {
-                                        ArrayList<String> favoriteProducts = dbConnector.getFavoriteProducts(typedUsername);
-                                        ArrayList<String> favoriteRecipes = dbConnector.getFavoriteRecipes(typedUsername);
-                                        this.currentUser = new User(typedUsername, typedPassword,favoriteProducts, favoriteRecipes);
+                                        ArrayList<String> favoriteProducts = dbConnector.getFavoriteList(typedUsername,"products");
+                                        ArrayList<String> favoriteRecipes = dbConnector.getFavoriteList(typedUsername, "recipes");
+                                        this.currentUser = new User(typedUsername,typedPassword,favoriteProducts,favoriteRecipes);
                                         isValidatingPassword = false;
                                         isValidatingUserData = false;
                                     }
@@ -131,7 +126,7 @@ class StartMenu {
         String username = "";
         boolean isCreatingUsername = true;
         while(isCreatingUsername) {
-            String typedUsername = this.textUI.getInput("\nCreate username (Must begin with a letter) or back to start menu (q): ");
+            String typedUsername = this.textUI.getInput("\nCreate username (Must begin with a letter) or go back to start menu (q): ");
             char firstCharacter = typedUsername.charAt(0);
             if (typedUsername.equalsIgnoreCase("q")) {
                 isCreatingUsername = false;
@@ -141,7 +136,7 @@ class StartMenu {
                     username = typedUsername;
                     isCreatingUsername = false;
                 } else if(userExists) {
-                    this.textUI.displayErrorMessage("\n Username exist, try another one!");
+                    this.textUI.displayErrorMessage("\nUsername exist, try another one!");
                 }
             } else {
                 this.textUI.displayErrorMessage("\nUsername must begin with a letter!");
@@ -155,15 +150,15 @@ class StartMenu {
         boolean isCreatingPassword = true;
         while(isCreatingPassword)
         {
-            String password = this.textUI.getInput("\nCreate password (Minimum 8 characters) or (q) to go back to start menu: ");
+            String password = this.textUI.getInput("\nCreate a password (Minimum 8 characters long) or (q) to go back to start menu: ");
             if (password.length() >= 8)
             {
                 this.dbConnector = new DBConnector();
                 boolean userSavedToFile = this.dbConnector.saveUserData(username, password);
                 if (!userSavedToFile) {
-                    this.textUI.displayMessage("\nCould not create an user-account. Try again later!");
+                    this.textUI.displayMessage("\nCould not create a user-account. Try again later!");
                 } else {
-                    String option = this.textUI.getInput("\nYou have now created an account. Log in? Y/N: ");
+                    String option = this.textUI.getInput("\nYou have now created a account. Do you want to log in Y/N ?");
                     if (option.equalsIgnoreCase("y")) {
                         this.currentUser = new User(username, password, favoriteProducts, favoriteRecipes);
                     }
