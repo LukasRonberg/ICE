@@ -36,8 +36,8 @@ public class Recipe {
 
         if(ingredients == null) ingredients = this.ingredients;
         for (Product product : productList) {
-            if (ingredients.contains(product.name)) {
-                String ingredient = product.name;
+            if (ingredients.contains(product.name.toLowerCase())) {
+                String ingredient = product.name.toLowerCase();
                 if (!cheapestProductMap.containsKey(ingredient) ||
                         product.pricePerGram() < cheapestProductMap.get(ingredient).pricePerGram()) {
                     cheapestProductMap.put(ingredient, product);
@@ -54,7 +54,7 @@ public class Recipe {
 
         if(ingredients == null) ingredients = this.ingredients;
         for (Product product : productList) {
-            if (ingredients.contains(product.name) && product.storeType == storeType) {
+            if (ingredients.contains(product.name.toLowerCase()) && product.storeType == storeType) {
                 cheapestProducts.add(product);
                 }
 
