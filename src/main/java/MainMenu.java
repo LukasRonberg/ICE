@@ -355,7 +355,11 @@ public class MainMenu {
 
     public void showCheapestProducts(Recipe selected) {
         // TODO: 11-12-2023 skal have mulighed for at vælge et produkt og gemme osv.
-        selected.findCheapestProductsNewAndBetter(allProducts, null);
+        var products = selected.findCheapestProductsNewAndBetter(allProducts, null);
+        ArrayList<String> bugFixList = new ArrayList<>();
+        for (Product p:products) {
+            bugFixList.add(p.getName());
+        }
         int counter = 1;
         for (Product p : selected.getProductList()) {
             if(counter >= 10) ui.displayMessage(counter+") "+p.toString());
@@ -363,7 +367,7 @@ public class MainMenu {
             counter ++;
         }
 
-        productOptions((ArrayList<String>) selected.ingredients);
+        productOptions(bugFixList);
     }
 
     public void getSavedProducts() {
