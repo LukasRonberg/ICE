@@ -376,29 +376,34 @@ public class DBConnector {
     // Liste over vores madvarer, i form af en ArrayList
     //TODO Listen skal præsenteret ordentligt overfor brugeren, så vedkommende kan vælge, ligesom i search recipes
     public List<Recipe> getRecipeByIngredient(String ingredients) throws SQLException {
+        // Tilføjer en ny liste, som giver mulighed for at gemme
         List<Recipe> recipeList = new ArrayList<>();
+
+        // Erklærer 2 variabler som etablere en forbindelse til databasen og udfører forespørgslen
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        // Etablerer en forbindelse til MySQL
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            /* Prøver at erklære et statement, som udfører forbindelsen med SQL, hvilket giver mulighed for, at kunne
-             søge på specifikke ingredienser, som kan forbindes til nøgleord af bestemte ingredienser, og kan
-             sammenlignes med opskrifter mm. Og "?" symbolet skal erstattes med værdien af den søgte ingrediens,
-             for at undgå forvirring */
+
+        // Gør brug af LIKE operatoren, som matcher den specificeret ingrediens i vores liste
             stmt = conn.prepareStatement("SELECT * FROM recipe WHERE ingredients "
                     + "LIKE ?");
 
-    /* Symbolet "%" giver anledning til, at kunne matche enhver karakter i vores string af ingredienser, og "1" er vores
-    indeks af vores parameter, som vi vil forbinde værdien af vores valgte ingrediens */
+        // Sætter værdien af den første parameter af vores stmt til en specificeret ingrediens, % matcher karakterer
             stmt.setString(1, "%" + ingredients + "%");
+
+        // Udfører vores stmt og returnerer resultatet
             ResultSet results = stmt.executeQuery();
 
             if (!results.next()) {
-                // Ingredient does not exist
+                // Ingredient does not exist (???)
+                // Tjekker om listen af resultater er tom, og meddeler, hvis produktet er udgået/udsolgt
                 System.out.println("Ingredient " + ingredients + " is currently out of stock. Please try another one.");
             } else {
+                // Itererer over resultatslisten og tilføjer den valgte opskrift til vores liste
                 while (results.next()) {
                     String name = results.getString("name");
                     List<String> ingredient = Arrays.asList(results.getString("ingredients").split(", "));
@@ -420,6 +425,7 @@ public class DBConnector {
                 return (List<Recipe>) recipeList.get(choice - 1);
                  */
             }
+            // Lukker forbindelsen til databaserne
             results.close();
             stmt.close();
             conn.close();
@@ -431,6 +437,7 @@ public class DBConnector {
         }
         return recipeList;
     }
+    // Prøver at kalde på Patricks eksisterende metode recipeOptions, men'øhhh...
     public List<Recipe> recipeOptions(List<Recipe> recipeOptions) {
         return recipeOptions;
     }
