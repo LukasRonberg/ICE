@@ -152,20 +152,27 @@ public class MainMenu {
     public void searchRecipesByBudget() {
         //double totalPrice = 0;
         double userBudget = Double.parseDouble(ui.getInput("Enter your budget:"));
+        ArrayList<Recipe> foundRecipes = new ArrayList<>();
 
         for (Recipe recipe : allRecipes) {
             recipe.calculateTotalPrice(allProducts);
         }
 
         for (int i = 0; i < allRecipes.size(); i++) {
-            if (userBudget >= allRecipes.get(i).TotalPrice) {
-                ui.displayMessage((i + 1) + ") " + allRecipes.get(i).getName() + " - " + allRecipes.get(i).TotalPrice + " DKK");
+            if (userBudget >= allRecipes.get(i).totalPrice) {
+                foundRecipes.add(allRecipes.get(i));
             }
         }
-        int choice = userChoice(allRecipes.size(), false);
+
+        foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
+        for (int i = 0; i < foundRecipes.size(); i++) {
+            ui.displayMessage((i + 1) + ") " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
+        }
+
+        int choice = userChoice(foundRecipes.size(), false);
 
         if (choice != 0) {
-            Recipe selected = allRecipes.get(choice - 1);
+            Recipe selected = foundRecipes.get(choice - 1);
             recipeOptions(selected);
         }
     }
@@ -282,11 +289,12 @@ public class MainMenu {
                     if (!exists) {
                         ui.displayMessage("Added recipe to favorites");
                         currentUser.getSavedRecipes().add(selected.getName());
+                        exists = true;
                     } else {
                         ui.displayMessage("Removed recipe from favorites");
                         currentUser.getSavedRecipes().remove(selected.getName());
+                        exists = false;
                     }
-                    exists = true;
                     break;
                 case "0":
                     ui.displayMessage("Returning to main menu...");
@@ -323,7 +331,9 @@ public class MainMenu {
         ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);
 
         for (int i = 1; i < stores.size(); i++) {
-            ui.displayMessage(i + ") " + stores.get(i-1).toString());
+            if(i >= 10) ui.displayMessage(i + ") " + stores.get(i-1).toString());
+            else ui.displayMessage(i + ")  " + stores.get(i-1).toString());
+
         }
 
         String selection = ui.getInput("0) Return \nType the number of the store you want to visit");
@@ -348,7 +358,8 @@ public class MainMenu {
         selected.findCheapestProductsNewAndBetter(allProducts, null);
         int counter = 1;
         for (Product p : selected.getProductList()) {
-            ui.displayMessage(counter+") "+p.toString());
+            if(counter >= 10) ui.displayMessage(counter+") "+p.toString());
+            else ui.displayMessage(counter+ ")  " +p.toString());
             counter ++;
         }
 
