@@ -6,9 +6,12 @@ public class Recipe {
 
     List<String> ingredients;
 
-    Double TotalPrice;
+    double totalPrice;
     private ArrayList<Product> productList = null;
 
+public double getTotalPrice(){
+    return totalPrice;
+}
 
     public Recipe(String name, List<String> ingredients) {
         this.name = name;
@@ -21,7 +24,7 @@ public class Recipe {
         for (Product product: productList) {
             priceCalc += product.price;
         }
-        TotalPrice = priceCalc;
+        totalPrice = priceCalc;
         return priceCalc;
     }
 
@@ -113,6 +116,10 @@ public class Recipe {
             }
         }
 
+        public void calcTotalPricePerHundred(){
+
+        }
+
         public void addToProducts(Product product){
             products.add(product);
         }
@@ -127,8 +134,28 @@ public class Recipe {
 
         @Override
         public String toString() {
-            return "Store name: "+ storeName+", total price per 100g: "+ (Math.round(totalStorePrice * 100.0) / 100.0)
-                    + ", number of wares in store: "+ getProducts().size();
+            String prettyName = storeName;
+
+            String prettyPricePerHundred = (Math.round(totalStorePrice * 100.0) / 100.0) + " DKK";
+            String prettyProductsInStore = getProducts().size()+"";
+
+            for (int i = prettyName.length(); i < 20; i++) {
+                prettyName += " ";
+            }
+            for (int i = prettyPricePerHundred.length(); i < 20; i++) {
+                prettyPricePerHundred += " ";
+            }
+            for (int i = prettyProductsInStore.length(); i < 20; i++) {
+                prettyProductsInStore += " ";
+            }
+
+
+            return "\u001B[35mName: \u001B[0m"+prettyName + "\u001B[32mPrice per 100g: \u001B[0m" + prettyPricePerHundred +
+                   "\u001b[34mWares Available: \u001B[0m" + prettyProductsInStore;
+
+
+
+
         }
     }
 }

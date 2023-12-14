@@ -17,10 +17,6 @@ public class AppFlow {
 
         mainMenu.allProducts = dbConnector.getProducts();
 
-        for (Product p: mainMenu.allProducts) {
-            System.out.println(p);
-        }
-
         mainMenu.allRecipes = dbConnector.getRecipes();
         mainMenu.currentUser = currentUser; //new User("Lars", "Tissemand");
         textUI.displayMessage("\n*** Welcome " + currentUser.getUsername() + "! ***");

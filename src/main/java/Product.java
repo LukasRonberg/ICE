@@ -1,8 +1,7 @@
-
-
 public class Product {
-    public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType) {
-        this.name = name;
+    public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType)
+    {
+        this.name = name.toLowerCase();
         this.weight = weight;
         this.price = price;
         this.image = image;
@@ -29,8 +28,33 @@ public class Product {
 
 
     @Override
-    public String toString() {
-        return name + ", Weight: " + weight + "g, Price: " + price + "DKK, Price per 100g: " + (Math.round(pricePerGram() * 100.0) / 100.0) + /*", product type: " + productType +*/ "DKK, Store: " + storeType;
+    public String toString()
+    {
+        char firstLetter = name.charAt(0);
+        String prettyName = Character.toUpperCase(firstLetter) + name.substring(1);
+
+        String prettyPrice = price + " DKK";
+        String prettyPricePerHundred = (Math.round(pricePerGram() * 100.0) / 100.0) + " DKK";
+        String prettyWeight = weight + " g";
+        String prettyStore = storeType.toString();
+
+        for (int i = prettyName.length(); i < 35; i++) {
+            prettyName += " ";
+        }
+        for (int i = prettyPrice.length(); i < 25; i++) {
+            prettyPrice += " ";
+        }
+        for (int i = prettyPricePerHundred.length(); i < 25; i++) {
+            prettyPricePerHundred += " ";
+        }
+        for (int i = prettyWeight.length(); i < 25; i++) {
+            prettyWeight += " ";
+        }
+        for (int i = prettyStore.length(); i < 25; i++) {
+            prettyStore += " ";
+        }
+
+        return "\u001B[35mName: \u001B[0m"+prettyName + "\u001B[32m Price: \u001B[0m" + prettyPrice + "\u001B[32mPrice per 100g: \u001B[0m" + prettyPricePerHundred +  /*", product type: " + productType +*/ "\u001b[34mWeight: \u001B[0m" + prettyWeight+ "\u001b[31mStore: \u001B[0m" + prettyStore +"\u001B[0m";
     }
 
     public double getPrice() {
