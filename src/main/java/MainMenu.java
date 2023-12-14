@@ -282,11 +282,12 @@ public class MainMenu {
                     if (!exists) {
                         ui.displayMessage("Added recipe to favorites");
                         currentUser.getSavedRecipes().add(selected.getName());
+                        exists = true;
                     } else {
                         ui.displayMessage("Removed recipe from favorites");
                         currentUser.getSavedRecipes().remove(selected.getName());
+                        exists = false;
                     }
-                    exists = true;
                     break;
                 case "0":
                     ui.displayMessage("Returning to main menu...");
