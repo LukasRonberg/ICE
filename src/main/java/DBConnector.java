@@ -311,12 +311,14 @@ public class DBConnector {
             while (rs.next()) {
                 String name = rs.getString("name");
                 String ingredientsData = rs.getString("ingredients");
-                ArrayList<String> ingredients = new ArrayList<>();
-                String[] ingredientsAfterSplit = ingredientsData.split(",", -1);
-                for (String i : ingredientsAfterSplit) {
-                    ingredients.add(i.trim());
+                if (ingredientsData != null) {
+                    ArrayList<String> ingredients = new ArrayList<>();
+                    String[] ingredientsAfterSplit = ingredientsData.split(",");
+                    for (String i : ingredientsAfterSplit) {
+                       ingredients.add(i.trim());
+                    }
+                    recipes.add(new Recipe(name, ingredients));
                 }
-                recipes.add(new Recipe(name, ingredients));
             }
             rs.close();
             stmt.close();
@@ -553,16 +555,28 @@ public class DBConnector {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String favoriteprod = "";
             String favoriterecip = "";
-            for(String p: favoriteproducts) {
-                favoriteprod = favoriteprod+p+",";
+            if(!favoriteproducts.isEmpty()) {
+                for (String p : favoriteproducts) {
+                    if (!p.isEmpty()) {
+                        favoriteprod = favoriteprod + p + ",";
+                    }
+                }
+                String sql = "UPDATE user SET favoriteProducts = '"+favoriteprod+"' WHERE username = '"+username+"'";
+                stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate(sql);
+                stmt.close();
             }
-            for(String r: favoriterecipes) {
-                favoriterecip = favoriterecip+r+",";
+            if(!favoriterecipes.isEmpty()) {
+                for (String r : favoriterecipes) {
+                    if (!r.isEmpty()) {
+                        favoriterecip = favoriterecip + r + ",";
+                    }
+                }
+                String sql = "UPDATE user SET favoriteRecipes = '"+favoriterecip+"' WHERE username = '"+username+"'";
+                stmt = conn.prepareStatement(sql);
+                stmt.executeUpdate(sql);
+                stmt.close();
             }
-            String sql = "UPDATE user SET favoriteProducts = '"+favoriteprod+"', favoriteRecipes = '"+favoriterecip+"' WHERE username = '"+username+"'";
-            stmt = conn.prepareStatement(sql);
-            stmt.executeUpdate(sql);
-            stmt.close();
             conn.close();
             favoriteListSaved  = true;
         } catch (SQLException var23) {
