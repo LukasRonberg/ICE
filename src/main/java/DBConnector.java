@@ -13,25 +13,22 @@ public class DBConnector {
     public DBConnector() {
     }
 
-    public boolean checkUsername(String typedUserName) {
+    public boolean countAllUsers() {
         Connection conn = null;
         PreparedStatement stmt = null;
-        boolean userExist = false;
+        boolean userTableExist = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM user";
-
+            String sql = "SELECT COUNT(*) AS userCount FROM user";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                //Retrieve by column username
-                String user = rs.getString("username");
-                if (typedUserName.equals(user)) {
-                    userExist = true;
+            if (rs.next()) {
+                int userCount = rs.getInt("userCount");
+                if (userCount > 0) {
+                    userTableExist = true;
                 }
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -46,7 +43,47 @@ public class DBConnector {
                 }
             } catch (SQLException var24) {
             }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException var23) {
+                var23.printStackTrace();
+            }
+        }
+        return userTableExist;
+    }
 
+    public boolean checkUsername(String typedUserName) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean userExist = false;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "SELECT username FROM user";
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String user = rs.getString("username");
+                if (typedUserName.equals(user)) {
+                    userExist = true;
+                }
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException var25) {
+            var25.printStackTrace();
+        } catch (Exception var26) {
+            var26.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException var24) {
+            }
             try {
                 if (conn != null) {
                     conn.close();
@@ -61,23 +98,20 @@ public class DBConnector {
     public boolean checkUserPassword(String typedUserName, String typedPassword) {
         Connection conn = null;
         PreparedStatement stmt = null;
-        boolean correctPassword = false;
+        boolean isPasswordCorrect = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM user";
+            String sql = "SELECT username,password FROM user";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
-
             while (rs.next()) {
-                //Retrieve by column username
                 String user = rs.getString("username");
                 String password = rs.getString("password");
                 if (typedUserName.equals(user) && typedPassword.equals(password)) {
-                    correctPassword = true;
+                    isPasswordCorrect = true;
                 }
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -92,7 +126,6 @@ public class DBConnector {
                 }
             } catch (SQLException var24) {
             }
-
             try {
                 if (conn != null) {
                     conn.close();
@@ -100,58 +133,16 @@ public class DBConnector {
             } catch (SQLException var23) {
                 var23.printStackTrace();
             }
-
         }
-        return correctPassword;
+        return isPasswordCorrect;
     }
 
-    public boolean loadAllUsers() {
+
+
+    public boolean createUser(String username, String password) {
         Connection conn = null;
         PreparedStatement stmt = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM user";
-            stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery(sql);
-
-            if (rs.next()) {
-                return true;
-            }
-
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException var25) {
-            var25.printStackTrace();
-        } catch (Exception var26) {
-            var26.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException var24) {
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException var23) {
-                var23.printStackTrace();
-            }
-
-        }
-
-        return false;
-    }
-
-    public boolean saveUserData(String username, String password) {
         boolean userCreated = false;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -184,10 +175,9 @@ public class DBConnector {
     }
 
     public boolean deleteUser(String typedUsername) {
-        boolean userDeleted = false;
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        boolean userDeleted = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -224,17 +214,13 @@ public class DBConnector {
         ArrayList<Product> products = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM products";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
-
             while (rs.next()) {
-                //Retrieve by column name
-                //int productID = rs.getInt("productID");
                 String name = rs.getString("name");
                 Enums.StoreType storeType = Enums.StoreType.valueOf(rs.getString("store"));
                 int weight = rs.getInt("weight");
@@ -243,7 +229,6 @@ public class DBConnector {
                 Enums.ProductType productType = Enums.ProductType.valueOf(rs.getString("type"));
                 products.add(new Product(name, weight, price, image, productType, storeType));
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -265,27 +250,21 @@ public class DBConnector {
             } catch (SQLException var23) {
                 var23.printStackTrace();
             }
-
         }
-
         return products;
     }
 
     public ArrayList<Product> getNewProducts() {
-        ArrayList<Product> products = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        ArrayList<Product> products = new ArrayList<>();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB2_URL, USER, PASS);
             String sql = "SELECT * FROM product";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
-
             while (rs.next()) {
-                //Retrieve by column name
-                //int productID = rs.getInt("productID");
                 String name = rs.getString("name");
                 Enums.StoreType storeType = Enums.StoreType.valueOf(rs.getString("store"));
                 int weight = rs.getInt("weight");
@@ -294,7 +273,6 @@ public class DBConnector {
                 Enums.ProductType productType = Enums.ProductType.valueOf(rs.getString("type"));
                 products.add(new Product(name, weight, price, image, productType, storeType));
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -316,28 +294,21 @@ public class DBConnector {
             } catch (SQLException var23) {
                 var23.printStackTrace();
             }
-
         }
-
         return products;
     }
 
-
     public ArrayList<Recipe> getRecipes() {
-        ArrayList<Recipe> recipes = new ArrayList<>();
-
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        ArrayList<Recipe> recipes = new ArrayList<>();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "SELECT * FROM recipe";
             stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery(sql);
-
             while (rs.next()) {
-                //Retrieve by column name
                 String name = rs.getString("name");
                 String ingredientsData = rs.getString("ingredients");
                 ArrayList<String> ingredients = new ArrayList<>();
@@ -347,7 +318,6 @@ public class DBConnector {
                 }
                 recipes.add(new Recipe(name, ingredients));
             }
-
             rs.close();
             stmt.close();
             conn.close();
@@ -369,10 +339,10 @@ public class DBConnector {
             } catch (SQLException var23) {
                 var23.printStackTrace();
             }
-
             return recipes;
         }
     }
+
     // Liste over vores madvarer, i form af en ArrayList
     //TODO Listen skal præsenteret ordentligt overfor brugeren, så vedkommende kan vælge, ligesom i search recipes
     public List<Recipe> getRecipeByIngredient(String ingredients) throws SQLException {
@@ -474,9 +444,9 @@ public class DBConnector {
     }
 
     public boolean insertAllFoodProducts(ArrayList<Product> newProductList) {
-        boolean insertCompleted = false;
         Connection conn = null;
         PreparedStatement stmt = null;
+        boolean productTableCreated = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -492,7 +462,7 @@ public class DBConnector {
             System.out.println("The product-table has been successfully created.....");
             stmt.close();
             conn.close();
-            insertCompleted = true;
+            productTableCreated = true;
         } catch (SQLException var23) {
             var23.printStackTrace();
         } catch (Exception var24) {
@@ -512,7 +482,7 @@ public class DBConnector {
                 var21.printStackTrace();
             }
         }
-        return insertCompleted;
+        return productTableCreated;
     }
 
 
@@ -523,32 +493,29 @@ public class DBConnector {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 conn = DriverManager.getConnection(DB_URL, USER, PASS);
-                String sql = "SELECT * FROM user";
+                String sql = "SELECT username,favoriteProducts,favoriteRecipes FROM user";
                 stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery(sql);
-
                 while (rs.next()) {
-                    //Retrieve by column username
                     String user = rs.getString("username");
                     String products = rs.getString("favoriteProducts");
                     String recipes = rs.getString("favoriteRecipes");
                     if(list.equals("products")) {
                         if (userName.equals(user) && products != null) {
                             String[] productsSplitted = products.split(",");
-                            for (String p : productsSplitted) {
+                            for (String p: productsSplitted) {
                                 favoriteList.add(p.trim());
                             }
                         }
                     } else if(list.equals("recipes")) {
                         if (userName.equals(user) && recipes != null) {
                             String[] recipesSplitted = recipes.split(",");
-                            for (String p : recipesSplitted) {
+                            for (String p: recipesSplitted) {
                                 favoriteList.add(p.trim());
                             }
                         }
                     }
                 }
-
                 rs.close();
                 stmt.close();
                 conn.close();
@@ -574,63 +541,13 @@ public class DBConnector {
 
             }
             return favoriteList;
-        }
-
-
-    public ArrayList<String> getFavoriteRecipes(String userName) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ArrayList<String> favoriteRecipes = new ArrayList<>();
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM user";
-            stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                //Retrieve by column username
-                String user = rs.getString("username");
-                String recipes = rs.getString("favoriteRecipes");
-                if (userName.equals(user) && recipes != null) {
-                    String[] recipesSplitted = recipes.split(",");
-                    for (String p : recipesSplitted) {
-                        favoriteRecipes.add(p.trim());
-                    }
-                }
-            }
-
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException var25) {
-            var25.printStackTrace();
-        } catch (Exception var26) {
-            var26.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException var24) {
-            }
-
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException var23) {
-                var23.printStackTrace();
-            }
-
-        }
-        return favoriteRecipes;
     }
 
+
     public boolean saveFavoriteLists(String username, ArrayList<String> favoriteproducts, ArrayList<String> favoriterecipes) {
-        boolean favoriteListSaved = false;
         Connection conn = null;
         PreparedStatement stmt = null;
+        boolean favoriteListSaved = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -669,6 +586,4 @@ public class DBConnector {
         }
         return favoriteListSaved;
     }
-
-
 }

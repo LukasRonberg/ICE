@@ -7,8 +7,6 @@ public class Main {
 
         AppFlow app = new AppFlow();
         app.start();
-
-        //patrickTest();
     }
 
     /** this methode generates a new table of Products by importing a raw product table of all our products
@@ -23,6 +21,6 @@ public class Main {
         ArrayList<Product> newProductList = mainMenu.generateNewProductList();
         dbConnector.insertAllFoodProducts(newProductList);
         end = System.nanoTime();
-        textUI.displayMessage("Product list created in "+(end-start)+" nano seconds");
+        textUI.displayMessage("Product list created in "+(int)((end-start)/1000000000)+" seconds");
     }
 }

@@ -3,11 +3,8 @@ import java.util.ArrayList;
 public class User {
     private String username;
     private String password;
-
     private ArrayList<String> savedRecipes;
-
     private ArrayList<String> savedProducts;
-
 
     public User(String username, String password, ArrayList<String> savedProducts, ArrayList<String> savedRecipes) {
         this.username = username;
@@ -18,8 +15,6 @@ public class User {
     public String getUsername() {
         return this.username;
     }
-
-
 
     public void addRecipeToFavorites(Recipe recipe)
     {
