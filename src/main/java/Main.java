@@ -9,8 +9,8 @@ public class Main {
         app.start();
     }
 
-    /** this methode generates a new table of Products by importing a raw product table of all our products
-     * and generating a ransom price(-15 to 15% of the average price) for each of our stores
+    /** this methode generates a new table of Products by calling the method generateNewProductList in the MainMenu-class and creating a new ArrayList(newProductList)
+     *  of the class Product. Then we send the newProductList to a method in DBConnector-class that puts it into a table in our Database.
      */
     public static void generateProductList() {
         TextUi textUI = new TextUi();

@@ -137,7 +137,11 @@ public class DBConnector {
         return isPasswordCorrect;
     }
 
-
+    /** creates a user in our user-table in our Database
+     * @param username the typedUsername
+     * @param password the typedPassword
+     * @return a boolean that is true if the action is a success
+     */
 
     public boolean createUser(String username, String password) {
         Connection conn = null;
@@ -174,6 +178,10 @@ public class DBConnector {
         return userCreated;
     }
 
+    /** this method deletes a user in our user-table in our Database
+     * @param typedUsername is the user that shall be deleted
+     * @return true if the action is a success and falls if not
+     */
     public boolean deleteUser(String typedUsername) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -210,6 +218,9 @@ public class DBConnector {
         return userDeleted;
     }
 
+    /** this method creates an ArrayList of Products by importing the products from our product-table in our Database
+     * @return an ArrayList of Products
+     */
     public ArrayList<Product> getProducts() {
         ArrayList<Product> products = new ArrayList<>();
         Connection conn = null;
@@ -254,6 +265,9 @@ public class DBConnector {
         return products;
     }
 
+    /** This method imports all our products from our basic-table in another Database.
+     * @return an ArrayList of products that is used by the generateNewProductList() in the MainMenu-class
+     */
     public ArrayList<Product> getNewProducts() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -298,6 +312,9 @@ public class DBConnector {
         return products;
     }
 
+    /** this method creates a ArrayList of Recipes by importing them from the recipe-table in our Database
+     * @return an ArrayList of Recipes
+     */
     public ArrayList<Recipe> getRecipes() {
         Connection conn = null;
         PreparedStatement stmt = null;
