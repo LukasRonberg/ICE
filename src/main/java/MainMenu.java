@@ -90,8 +90,10 @@ public class MainMenu {
                 ui.displayMessage((i + 1) + ". " + matchedRecipe.get(i).getName());
             }
             int choice = userChoice(matchedRecipe.size(), false);
-            Recipe selected = matchedRecipe.get(choice - 1);
-            recipeOptions(selected);
+            if(choice != 0) {
+                Recipe selected = matchedRecipe.get(choice - 1);
+                recipeOptions(selected);
+            }
         } else {
             ui.displayMessage("Try again");
         }
