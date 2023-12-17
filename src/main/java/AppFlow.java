@@ -20,7 +20,7 @@ public class AppFlow {
 
         boolean choosingAction = true;
         while (choosingAction) {
-            String userInput = textUI.getInput("Press Any of the following keys:" +
+            String userInput = textUI.getInput("\nPress Any of the following keys:" +
                     "\n1. Search products by name" +
                     "\n2. Search recipes by name" +
                     "\n3. Search recipes by ingredient" +
