@@ -2,28 +2,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AppFlow {
-    DBConnector dbConnector = new DBConnector();
-    TextUi textUI = new TextUi();
-    MainMenu mainMenu = new MainMenu();
-    User currentUser;
+    private DBConnector dbConnector = new DBConnector();
+    private TextUi textUI = new TextUi();
+    private MainMenu mainMenu = new MainMenu();
+    private User currentUser;
 
     public void start() throws SQLException {
-        //this.currentUser = currentUser;
+
         StartMenu startMenu = new StartMenu();
         startMenu.display();
 
         currentUser = startMenu.getUserAccount();
-
-
         mainMenu.allProducts = dbConnector.getProducts();
-
         mainMenu.allRecipes = dbConnector.getRecipes();
-        mainMenu.currentUser = currentUser; //new User("Lars", "Tissemand");
+        mainMenu.currentUser = currentUser;
         textUI.displayMessage("\n*** Welcome " + currentUser.getUsername() + "! ***");
 
         boolean choosingAction = true;
         while (choosingAction) {
-            String userInput = textUI.getInput("Press Any of the following keys:" +
+            String userInput = textUI.getInput("\nPress Any of the following keys:" +
                     "\n1. Search products by name" +
                     "\n2. Search recipes by name" +
                     "\n3. Search recipes by ingredient" +
@@ -61,7 +58,5 @@ public class AppFlow {
                 //break;
             }
         }
-
     }
-
 }

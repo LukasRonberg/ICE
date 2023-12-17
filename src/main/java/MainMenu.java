@@ -3,12 +3,9 @@ import java.util.*;
 
 public class MainMenu {
     public ArrayList<Recipe> allRecipes;
-
-    ArrayList<Product> allProducts;
-    TextUi ui = new TextUi();
-
-    DBConnector dbConnector = new DBConnector();
-
+    public ArrayList<Product> allProducts;
+    private TextUi ui = new TextUi();
+    private DBConnector dbConnector = new DBConnector();
     User currentUser;
 
     public void startUp() {
@@ -38,7 +35,7 @@ public class MainMenu {
             ui.displayMessage("Matching products:");
             int productNumber = 1;
             for (String productName : uniqueProductNames) {
-                ui.displayMessage(productNumber + ") " + productName);
+                ui.displayMessage(productNumber + ". " + productName);
                 productNumber++;
             }
             productOptions(uniqueProductNames);
@@ -55,9 +52,9 @@ public class MainMenu {
                 boolean productIsSaved = false;
                 ui.displayMessage(selected);
                 if(currentUser.getSavedProducts().contains(selected)){
-                    showPriceOrSave = intParser(ui.getInput("1) Show prices and stores\n2) Remove product search\n0) Return"));
+                    showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Remove product search\n0. Return"));
                     productIsSaved = true;
-                } else showPriceOrSave = intParser(ui.getInput("1) Show prices and stores\n2) Save product search\n0) Return"));
+                } else showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Save it to your favorite list of products\n0. Return"));
                 switch (showPriceOrSave) {
                     case 1:
                         ui.displayMessage("Stores and Prices for " + selected + ":");
@@ -90,11 +87,13 @@ public class MainMenu {
         }
         if (!matchedRecipe.isEmpty()) {
             for (int i = 0; i < matchedRecipe.size(); i++) {
-                ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName());
+                ui.displayMessage((i + 1) + ". " + matchedRecipe.get(i).getName());
             }
             int choice = userChoice(matchedRecipe.size(), false);
-            Recipe selected = matchedRecipe.get(choice - 1);
-            recipeOptions(selected);
+            if(choice != 0) {
+                Recipe selected = matchedRecipe.get(choice - 1);
+                recipeOptions(selected);
+            }
         } else {
             ui.displayMessage("Try again");
         }
@@ -166,7 +165,7 @@ public class MainMenu {
 
         foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
         for (int i = 0; i < foundRecipes.size(); i++) {
-            ui.displayMessage((i + 1) + ") " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
+            ui.displayMessage((i + 1) + ". " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
         }
 
         int choice = userChoice(foundRecipes.size(), false);
@@ -181,14 +180,14 @@ public class MainMenu {
         int choice = 0;
         do {
             try {
-                if(!isProduct)choice = intParser(ui.getInput("0) Return \nList of recipes\nEnter a number to choose:"));
-                else choice = intParser(ui.getInput("0) Return \nList of products\nEnter a number to choose:"));
+                if(!isProduct)choice = intParser(ui.getInput("0. Return \nList of recipes\nEnter a number to choose: "));
+                else choice = intParser(ui.getInput("0. Return \nList of products\nEnter a number to choose: "));
 
                 if (choice < 0 || choice > maxChoice) {
                     ui.displayMessage("Invalid. Please pick a number between 0 and " + maxChoice);
                 }
             } catch (NumberFormatException e) {
-                ui.displayMessage("Invalid. Please enter a valid number");
+                ui.displayMessage("Invalid. Please enter a valid number ");
             }
         } while (choice < 0 || choice > maxChoice);
         return choice;
@@ -203,52 +202,6 @@ public class MainMenu {
         }
     }
 
-    /*private void productChoices(Product selected) {
-        boolean exists = false;
-        String selectResponse;
-
-        for (Product product : currentUser.getSavedProducts()) {
-            if (product.getName().equals(selected.getName())) {
-                exists = true;
-                break;
-            }
-        }
-        label:
-        while(true) {
-            if (exists) {
-                selectResponse = ui.getInput("\t" + selected.getName()
-                        + "Type: "
-                        + selected.getProductType()
-                        + " \n1) Show cheapest store to shop"
-                        + " \n2) Remove recipe from saved recipes"
-                        + " \n3) Return to main menu");
-            } else {
-                selectResponse = ui.getInput("\t" + selected.getName()
-                        + "Type: "
-                        + selected.getProductType()
-                        + " \n1) Show cheapest store to shop"
-                        + " \n2) Save recipe to saved recipes"
-                        + " \n3) Return to main menu");
-            }
-            switch (selectResponse) {
-                case "1":
-                    showCheapestStore(selected);
-                    break;
-                case "2":
-                    if (!exists) {
-                        ui.displayMessage("Added recipe to favorites");
-                        currentUser.addProductToFavorites(selected);
-                    } else {
-                        ui.displayMessage("Removed recipe from favorites");
-                        currentUser.removeProductFromFavorites(selected);
-                    }
-                    break;
-                case "3":
-                    ui.displayMessage("Returning to main menu...");
-                    break label;
-            }
-        }
-    }*/
     public void recipeOptions(Recipe selected) {
         boolean exists = false;
         String selectResponse;
@@ -265,18 +218,18 @@ public class MainMenu {
                 selectResponse = ui.getInput(selected.getName()
                         + ": Ingredients include:"
                         + selected.ingredients
-                        + " \n1) Show cheapest products"
-                        + " \n2) Show cheapest store to shop"
-                        + " \n3) Remove recipe from saved recipes"
-                        + " \n0) Return to main menu");
+                        + " \n1. Show cheapest products"
+                        + " \n2. Show cheapest store to shop"
+                        + " \n3. Remove recipe from saved recipes"
+                        + " \n0. Return to main menu");
             } else {
                 selectResponse = ui.getInput(selected.getName()
                         + ": Ingredients include: "
                         + selected.ingredients
-                        + " \n1) Show cheapest products"
-                        + " \n2) Show cheapest store to shop"
-                        + " \n3) Save recipe to saved recipes"
-                        + " \n0) Return to main menu");
+                        + " \n1. Show cheapest products"
+                        + " \n2. Show cheapest store to shop"
+                        + " \n3. Save it to your favorite list of recipes"
+                        + " \n0. Return to main menu");
             }
             switch (selectResponse) {
                 case "1":
@@ -303,12 +256,15 @@ public class MainMenu {
         }
     }
 
+    /**
+     * this method generates ransom prices(-20 to 20% of the average price) for each of our stores
+     * @return a ArrayList of Products
+     */
     public static ArrayList<Product> generateNewProductList() {
         DBConnector dbConnector = new DBConnector();
         ArrayList<Product> productList = new ArrayList<>();
         ArrayList<Product> oldProductList = dbConnector.getNewProducts();
         Random random = new Random();
-
         for (Product p: oldProductList) {
             for(int j = 0; j < Enums.StoreType.values().length; j++) {
                 String name = p.name;
@@ -318,7 +274,7 @@ public class MainMenu {
                 double price = p.price-(random.nextInt(price1,price2));
                 Enums.ProductType productType = p.productType;
                 Enums.StoreType storeType = Enums.StoreType.values()[j];
-                Product product = new Product(name, (int) weight, price, null, productType, storeType);
+                Product product = new Product(name, weight, price, null, productType, storeType);
                 productList.add(product);
             }
         }
@@ -329,21 +285,18 @@ public class MainMenu {
     public void showCheapestStore(Recipe selected) {
         // TODO: 11-12-2023 skal have mulighed for at vælge en butik og se produkter
         ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);
-
         for (int i = 1; i < stores.size(); i++) {
-            if(i >= 10) ui.displayMessage(i + ") " + stores.get(i-1).toString());
-            else ui.displayMessage(i + ")  " + stores.get(i-1).toString());
-
+            if(i >= 10) ui.displayMessage(i + ". " + stores.get(i-1).toString());
+            else ui.displayMessage(i + ".  " + stores.get(i-1).toString());
         }
-
-        String selection = ui.getInput("0) Return \nType the number of the store you want to visit");
+        String selection = ui.getInput("0. Return \nType the number of the store you want to visit");
         if(selection.equals("0")) return;
         while (true) {
             try {
-                var store = stores.get(Integer.parseInt(selection));
+                var store = stores.get(Integer.parseInt(selection)-1);
                 for (Product p: store.getProducts()) {
                     ui.displayMessage(p.toString());
-                };
+                }
                 System.out.println();
                 break;
             } catch (NumberFormatException e) {
@@ -355,21 +308,25 @@ public class MainMenu {
 
     public void showCheapestProducts(Recipe selected) {
         // TODO: 11-12-2023 skal have mulighed for at vælge et produkt og gemme osv.
-        selected.findCheapestProductsNewAndBetter(allProducts, null);
+        var products = selected.findCheapestProductsNewAndBetter(allProducts, null);
+        ArrayList<String> bugFixList = new ArrayList<>();
+        for (Product p:products) {
+            bugFixList.add(p.getName());
+        }
         int counter = 1;
         for (Product p : selected.getProductList()) {
             if(counter >= 10) ui.displayMessage(counter+") "+p.toString());
-            else ui.displayMessage(counter+ ")  " +p.toString());
+            else ui.displayMessage(counter+ ".  " +p.toString());
             counter ++;
         }
-
-        productOptions((ArrayList<String>) selected.ingredients);
+        productOptions(bugFixList);
     }
 
     public void getSavedProducts() {
         int counter = 1;
-        for (String productName : currentUser.getSavedProducts()){
-            ui.displayMessage(counter+") " + productName);
+        for (String productName : currentUser.getSavedProducts())
+        {
+            ui.displayMessage(counter+". " + productName);
             counter++;
         }
         productOptions(currentUser.getSavedProducts());
@@ -378,10 +335,9 @@ public class MainMenu {
     public void getSavedRecipes() {
         int counter = 1;
         for (String recipeName : currentUser.getSavedRecipes()){
-            ui.displayMessage(counter+") "+recipeName);
+            ui.displayMessage(counter+". "+recipeName);
             counter++;
         }
-
         int choice = userChoice(currentUser.getSavedRecipes().size(), false);
         if(choice == 0) return;
         Recipe recipeChosen = null;
@@ -391,7 +347,6 @@ public class MainMenu {
                 break;
             }
         }
-
         recipeOptions(recipeChosen);
     }
 }
