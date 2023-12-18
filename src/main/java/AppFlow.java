@@ -1,20 +1,20 @@
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 public class AppFlow {
+    private final DBConnector dbConnector = new DBConnector();
+    private final TextUI textUI = new TextUI();
+    private final MainMenu mainMenu = new MainMenu();
 
-    public void start() throws SQLException {
+    private final StartMenu startMenu = new StartMenu();
 
-        DBConnector dbConnector = new DBConnector();
-        TextUI textUI = new TextUI();
-        MainMenu mainMenu = new MainMenu();
-        User currentUser;
-
-        StartMenu startMenu = new StartMenu();
+    private User currentUser = null;
+    public void start() {
         startMenu.display(dbConnector);
         currentUser = startMenu.getUserAccount();
+
         mainMenu.allProducts = dbConnector.getProducts();
         mainMenu.allRecipes = dbConnector.getRecipes();
+
+
+
         textUI.displayMessage("\n*** Welcome " + currentUser.getUsername() + "! ***");
 
         boolean choosingAction = true;
@@ -52,9 +52,6 @@ public class AppFlow {
                     currentUser = null;
                     choosingAction = false;
                     break;
-                //default:
-                //errorIsNotAnOption();
-                //break;
             }
         }
     }

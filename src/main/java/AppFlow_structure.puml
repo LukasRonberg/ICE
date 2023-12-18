@@ -1,0 +1,359 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "AppFlow",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_125539135 { 
+   	label=StartMenu
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   StartMenu125539135[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)StartMenu</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   currentUser: User [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textUI: TextUI [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" ># chooseMenuOption(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- createPassword(username: String, dbConnector: DBConnector)</TD></TR>
+<TR><TD ALIGN="LEFT" >- createUser(dbConnector: DBConnector)</TD></TR>
+<TR><TD ALIGN="LEFT" >- createUsername(dbConnector: DBConnector): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ display(dbConnector: DBConnector)</TD></TR>
+<TR><TD ALIGN="LEFT" >- loginOrDelete(action: String, dbConnector: DBConnector)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1355179215 { 
+   	label=Product
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Product1355179215[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Product</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   image: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   price: double [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   productType: ProductType [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   storeType: StoreType [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   weight: int [1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1793153887 { 
+   	label=TextUI
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   TextUI1793153887[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TextUI</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   scan: Scanner [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ displayErrorMessage(msg: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ displayMessage(msg: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getInput(msg: String): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1851047506 { 
+   	label=Recipe
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Recipe1851047506[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Recipe</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ingredients: List&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productList: ArrayList&lt;Product&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   totalPrice: double [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ calculateTotalPrice(allProducts: ArrayList&lt;Product&gt;): double</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findCheapestProductInStoreInOrder(productList: List&lt;Product&gt;, ingredients: List&lt;String&gt;, storeType: StoreType): ArrayList&lt;Product&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findCheapestProductsNewAndBetter(productList: List&lt;Product&gt;, ingredients: List&lt;String&gt;): List&lt;Product&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ findCheapestStore(productList: List&lt;Product&gt;): ArrayList&lt;Store&gt;</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_2645995 { 
+   	label=User
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   User2645995[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)User</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   password: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   savedProducts: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   savedRecipes: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   username: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addRecipeToFavorites(recipe: Recipe)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ removeRecipeFromFavorites(recipe: Recipe)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_55996120 { 
+   	label=MainMenu
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   MainMenu55996120[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainMenu</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   allProducts: ArrayList&lt;Product&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   allRecipes: ArrayList&lt;Recipe&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- doubleParser(stringToParse: String, ui: TextUI): double</TD></TR>
+<TR><TD ALIGN="LEFT" >+ generateDataset(numEntries: int): ArrayList&lt;Product&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ generateNewProductList(dbConnector: DBConnector): ArrayList&lt;Product&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getSavedProducts(currentUser: User, ui: TextUI)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getSavedRecipes(currentUser: User, ui: TextUI)</TD></TR>
+<TR><TD ALIGN="LEFT" >- intParser(stringToParse: String, ui: TextUI): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- productOptions(listToChooseFrom: ArrayList&lt;String&gt;, ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ recipeOptions(selected: Recipe, currentUser: User, ui: TextUI)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ searchByIngredientExample(dbConnector: DBConnector, ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ searchByIngredients(ui: TextUI, dbConnector: DBConnector, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ searchProducts(ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ searchRecipes(ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ searchRecipesByBudget(ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showCheapestProducts(selected: Recipe, ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showCheapestStore(selected: Recipe, ui: TextUI)</TD></TR>
+<TR><TD ALIGN="LEFT" >- showRecipesAndPrice(matchedRecipe: ArrayList&lt;Recipe&gt;, ui: TextUI, currentUser: User)</TD></TR>
+<TR><TD ALIGN="LEFT" >- userChoice(maxChoice: int, isProduct: boolean, ui: TextUI): int</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_593839761 { 
+   	label=DBConnector
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   DBConnector593839761[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DBConnector</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   DB2_URL: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   DB_URL: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   PASS: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   USER: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ checkUserPassword(typedUserName: String, typedPassword: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ checkUsername(typedUserName: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ countAllUsers(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createUser(username: String, password: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ deleteUser(typedUsername: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getFavoriteList(userName: String, list: String): ArrayList&lt;String&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getRecipeByIngredient(ingredient: String): ArrayList&lt;Recipe&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ insertAllFoodProducts(newProductList: ArrayList&lt;Product&gt;): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ insertFoodProducts(productToInsert: Product): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveFavoriteLists(username: String, favoriteproducts: ArrayList&lt;String&gt;, favoriterecipes: ArrayList&lt;String&gt;): boolean</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_80218305 { 
+   	label=Store
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Store80218305[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Store</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   products: ArrayList&lt;Product&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   storeName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   totalStorePrice: double [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addToProducts(product: Product)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calcTotalPricePerHundred()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calcTotalStorePrice()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_870289103 { 
+   	label=AppFlow
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   AppFlow870289103[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)AppFlow</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   currentUser: User [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dbConnector: DBConnector [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainMenu: MainMenu [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   startMenu: StartMenu [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textUI: TextUI [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ start()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+'edges    
+AppFlow870289103 -> DBConnector593839761[label="dbConnector
+[0..1]"];
+AppFlow870289103 -> MainMenu55996120[label="mainMenu
+[0..1]"];
+AppFlow870289103 -> StartMenu125539135[label="startMenu
+[0..1]"];
+AppFlow870289103 -> TextUI1793153887[label="textUI
+[0..1]"];
+AppFlow870289103 -> User2645995[label="currentUser
+[0..1]"];
+MainMenu55996120 -> DBConnector593839761[label="searchByIngredientExample() -> getRecipeByIngredient()"];
+MainMenu55996120 -> Product1355179215[label="allProducts
+[0..*]"];
+MainMenu55996120 -> Recipe1851047506[label="allRecipes
+[0..*]"];
+Recipe1851047506 -> Product1355179215[label="productList
+[0..*]"];
+StartMenu125539135 -> TextUI1793153887[label="textUI
+[0..1]"];
+StartMenu125539135 -> User2645995[label="currentUser
+[0..1]"];
+Store80218305 -> Product1355179215[label="products
+[0..*]"];
+    
+}
+@enduml

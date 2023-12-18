@@ -3,8 +3,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class StartMenu {
-    protected TextUI textUI = new TextUI();
-    protected User currentUser;
+    private final TextUI textUI = new TextUI();
+    private User currentUser;
 
     StartMenu() {
     }

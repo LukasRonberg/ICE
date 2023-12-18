@@ -1,12 +1,12 @@
 public class Product {
 
-    private String name;
+    private String name = "";
 
-    private int weight;
+    private int weight = 0;
 
-    private double price;
+    private double price = 0;
 
-    private String image;
+    private String image = "";
 
     Enums.ProductType productType = null;
     Enums.StoreType storeType = null;

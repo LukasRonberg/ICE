@@ -1,5 +1,3 @@
-import org.w3c.dom.Text;
-
 import java.sql.SQLException;
 import java.util.*;
 
@@ -214,8 +212,7 @@ public class MainMenu {
      * this method generates ransom prices(-20 to 20% of the average price) for each of our stores
      * @return a ArrayList of Products
      */
-    public static ArrayList<Product> generateNewProductList() {
-        DBConnector dbConnector = new DBConnector();
+    public static ArrayList<Product> generateNewProductList(DBConnector dbConnector) {
         ArrayList<Product> productList = new ArrayList<>();
         ArrayList<Product> oldProductList = dbConnector.getNewProducts();
         Random random = new Random();
@@ -238,11 +235,13 @@ public class MainMenu {
 
     public void showCheapestStore(Recipe selected, TextUI ui) {
         // TODO: 11-12-2023 skal have mulighed for at vælge en butik og se produkter
-        ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);
+        ArrayList<Store> stores = selected.findCheapestStore(allProducts);
+        stores.sort(Comparator.comparingDouble(Store::getTotalStorePrice));
         for (int i = 1; i < stores.size(); i++) {
             if(i >= 10) ui.displayMessage(i + ") " + stores.get(i-1).toString());
             else ui.displayMessage(i + ")  " + stores.get(i-1).toString());
         }
+
         String selection = ui.getInput("0) Return \nType the number of the store you want to visit");
         if(selection.equals("0")) return;
         while (true) {

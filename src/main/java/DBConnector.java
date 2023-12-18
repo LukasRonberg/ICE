@@ -1,7 +1,5 @@
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class DBConnector {
@@ -10,7 +8,6 @@ public class DBConnector {
     private final String USER = "thegreenway_dk";
     private final String PASS = "TheBlueMan45";
 
-    MainMenu mainMenu = new MainMenu();
     public DBConnector() {
     }
 
