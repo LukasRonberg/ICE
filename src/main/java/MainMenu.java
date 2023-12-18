@@ -35,7 +35,7 @@ public class MainMenu {
             ui.displayMessage("Matching products:");
             int productNumber = 1;
             for (String productName : uniqueProductNames) {
-                ui.displayMessage(productNumber + ". " + productName);
+                ui.displayMessage(productNumber + ") " + productName);
                 productNumber++;
             }
             productOptions(uniqueProductNames);
@@ -57,10 +57,16 @@ public class MainMenu {
                 switch (showPriceOrSave) {
                     case 1:
                         ui.displayMessage("Stores and Prices for " + selected + ":");
+                        ArrayList<Product> productsOfType = new ArrayList<>();
                         for (Product product : allProducts) {
                             if (product.getName().equalsIgnoreCase(selected)) {
-                                ui.displayMessage(/*"Price: " + product.getPrice() + " - Store: " + product.getStoreType()*/product.toString());
+                                productsOfType.add(product);
+                                //ui.displayMessage(product.toString());
                             }
+                        }
+                        productsOfType.sort(Comparator.comparingDouble(Product::getPricePerHundredGrams));
+                        for (Product p:productsOfType) {
+                            System.out.println(p.toString());
                         }
                         break;
                     case 2:
@@ -83,9 +89,17 @@ public class MainMenu {
                 matchedRecipe.add(recipe);
             }
         }
+
+        for (Recipe recipe : matchedRecipe) {
+            recipe.calculateTotalPrice(allProducts);
+        }
+        matchedRecipe.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
+
+
         if (!matchedRecipe.isEmpty()) {
+            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
             for (int i = 0; i < matchedRecipe.size(); i++) {
-                ui.displayMessage((i + 1) + ". " + matchedRecipe.get(i).getName());
+                ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).totalPrice + " DKK");
             }
             int choice = userChoice(matchedRecipe.size(), false);
             if(choice != 0) {
@@ -103,14 +117,21 @@ public class MainMenu {
         ArrayList<Recipe> allOfTheRecipes = dbConnector.getRecipes();
         for (Recipe recipe : allOfTheRecipes) {
             for(String i: recipe.ingredients) {
-                if (i.equalsIgnoreCase(input)) {
+                if (i.contains(input) && matchedRecipe.contains(recipe) == false) {
                     matchedRecipe.add(recipe);
                 }
             }
         }
+
+        for (Recipe recipe : matchedRecipe) {
+            recipe.calculateTotalPrice(allProducts);
+        }
+        matchedRecipe.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
+
         if (!matchedRecipe.isEmpty()) {
+            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
             for (int i = 0; i < matchedRecipe.size(); i++) {
-                ui.displayMessage((i + 1) + ". " + matchedRecipe.get(i).getName());
+                ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).totalPrice + " DKK");
             }
             int choice = userChoice(matchedRecipe.size(), false);
             if(choice != 0) {
@@ -132,7 +153,7 @@ public class MainMenu {
 
         if (!searchedList.isEmpty()) {
             for (int i = 0; i < searchedList.size(); i++) {
-                ui.displayMessage((i + 1) + ". " + searchedList.get(i).getName());
+                ui.displayMessage((i + 1) + ") " + searchedList.get(i).getName());
             }
             int choice = userChoice(searchedList.size(), false);
             if(choice != 0) {
@@ -196,8 +217,9 @@ public class MainMenu {
             }
 
             foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
+            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
             for (int i = 0; i < foundRecipes.size(); i++) {
-                ui.displayMessage((i + 1) + ". " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
+                ui.displayMessage((i + 1) + ") " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
             }
 
             int choice = userChoice(foundRecipes.size(), false);
@@ -216,8 +238,8 @@ public class MainMenu {
         int choice = 0;
         do {
             try {
-                if(!isProduct)choice = intParser(ui.getInput("0. Return \nList of recipes\nEnter a number to choose: "));
-                else choice = intParser(ui.getInput("0. Return \nList of products\nEnter a number to choose: "));
+                if(!isProduct)choice = intParser(ui.getInput("0) Return \nList of recipes\nEnter a number to choose: "));
+                else choice = intParser(ui.getInput("0) Return \nList of products\nEnter a number to choose: "));
 
                 if (choice < 0 || choice > maxChoice) {
                     ui.displayMessage("Invalid. Please pick a number between 0 and " + maxChoice);
@@ -328,10 +350,10 @@ public class MainMenu {
         // TODO: 11-12-2023 skal have mulighed for at vælge en butik og se produkter
         ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);
         for (int i = 1; i < stores.size(); i++) {
-            if(i >= 10) ui.displayMessage(i + ". " + stores.get(i-1).toString());
-            else ui.displayMessage(i + ".  " + stores.get(i-1).toString());
+            if(i >= 10) ui.displayMessage(i + ") " + stores.get(i-1).toString());
+            else ui.displayMessage(i + ")  " + stores.get(i-1).toString());
         }
-        String selection = ui.getInput("0. Return \nType the number of the store you want to visit");
+        String selection = ui.getInput("0) Return \nType the number of the store you want to visit");
         if(selection.equals("0")) return;
         while (true) {
             try {
@@ -358,7 +380,7 @@ public class MainMenu {
         int counter = 1;
         for (Product p : selected.getProductList()) {
             if(counter >= 10) ui.displayMessage(counter+") "+p.toString());
-            else ui.displayMessage(counter+ ".  " +p.toString());
+            else ui.displayMessage(counter+ ") " +p.toString());
             counter ++;
         }
         productOptions(bugFixList);
@@ -368,7 +390,7 @@ public class MainMenu {
         int counter = 1;
         for (String productName : currentUser.getSavedProducts())
         {
-            ui.displayMessage(counter+". " + productName);
+            ui.displayMessage(counter+") " + productName);
             counter++;
         }
         productOptions(currentUser.getSavedProducts());
@@ -377,7 +399,7 @@ public class MainMenu {
     public void getSavedRecipes() {
         int counter = 1;
         for (String recipeName : currentUser.getSavedRecipes()){
-            ui.displayMessage(counter+". "+recipeName);
+            ui.displayMessage(counter+") "+recipeName);
             counter++;
         }
         int choice = userChoice(currentUser.getSavedRecipes().size(), false);
