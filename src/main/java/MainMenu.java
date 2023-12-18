@@ -1,14 +1,13 @@
+import org.w3c.dom.Text;
+
 import java.sql.SQLException;
 import java.util.*;
 
 public class MainMenu {
     public ArrayList<Recipe> allRecipes;
     public ArrayList<Product> allProducts;
-    private TextUI ui = new TextUI();
-    private DBConnector dbConnector = new DBConnector();
-    User currentUser;
 
-    public void searchProducts() {
+    public void searchProducts(TextUI ui, User currentUser) {
         String input = ui.getInput("Enter product name:");
         ArrayList<String> uniqueProductNames = new ArrayList<>();
 
@@ -30,11 +29,11 @@ public class MainMenu {
                 ui.displayMessage(productNumber + ") " + productName);
                 productNumber++;
             }
-            productOptions(uniqueProductNames);
+            productOptions(uniqueProductNames, ui, currentUser);
         }
     }
 
-    public void searchRecipes() {
+    public void searchRecipes(TextUI ui, User currentUser) {
         String input = ui.getInput("Enter recipe name: ");
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
 
@@ -51,13 +50,13 @@ public class MainMenu {
 
 
         if (!matchedRecipe.isEmpty()) {
-            showRecipesAndPrice(matchedRecipe);
+            showRecipesAndPrice(matchedRecipe, ui, currentUser);
         } else {
             ui.displayMessage("Try again");
         }
     }
 
-    public void searchByIngredients() {
+    public void searchByIngredients(TextUI ui, DBConnector dbConnector, User currentUser) {
         String input = ui.getInput("Enter your desired ingredient: ");
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
         ArrayList<Recipe> allOfTheRecipes = dbConnector.getRecipes();
@@ -75,14 +74,14 @@ public class MainMenu {
         matchedRecipe.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
 
         if (!matchedRecipe.isEmpty()) {
-            showRecipesAndPrice(matchedRecipe);
+            showRecipesAndPrice(matchedRecipe, ui, currentUser);
         } else {
             ui.displayErrorMessage("\nSorry! but "+input+" does not appear in any of our recipes. Please try another one!");
         }
     }
 
     // TODO: 11-12-2023 tilføj funktionalitet til at søge på et delvist ord og spørg om det var dette der blev ment
-    public void searchByIngredientExample() throws SQLException {
+    public void searchByIngredientExample(DBConnector dbConnector, TextUI ui, User currentUser) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a desired ingredient: ");
         String ingredient = scanner.nextLine();
@@ -92,18 +91,17 @@ public class MainMenu {
             for (int i = 0; i < searchedList.size(); i++) {
                 ui.displayMessage((i + 1) + ") " + searchedList.get(i).getName());
             }
-            int choice = userChoice(searchedList.size(), false);
+            int choice = userChoice(searchedList.size(), false, ui);
             if(choice != 0) {
                 Recipe selected = searchedList.get(choice - 1);
-                recipeOptions(selected);
+                recipeOptions(selected, currentUser,ui);
             }
         } else {
             System.out.println(ingredient + " does not appear in any of our recipes. Please try another one.");
         }
     }
 
-    public void searchRecipesByBudget() {
-
+    public void searchRecipesByBudget(TextUI ui, User currentUser) {
         try{
             double userBudget = Double.parseDouble(ui.getInput("Enter your budget:"));
 
@@ -120,18 +118,18 @@ public class MainMenu {
             }
 
             foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
-            showRecipesAndPrice(foundRecipes);
+            showRecipesAndPrice(foundRecipes, ui, currentUser);
         } catch (NumberFormatException e) {
-            doubleParser("");
+            doubleParser("", ui);
         }
     }
 
-    private int userChoice(int maxChoice, boolean isProduct) {
+    private int userChoice(int maxChoice, boolean isProduct, TextUI ui) {
         int choice = 0;
         do {
             try {
-                if(!isProduct)choice = intParser(ui.getInput("0) Return \nList of recipes\nEnter a number to choose: "));
-                else choice = intParser(ui.getInput("0) Return \nList of products\nEnter a number to choose: "));
+                if(!isProduct)choice = intParser(ui.getInput("0) Return \nList of recipes\nEnter a number to choose: "), ui);
+                else choice = intParser(ui.getInput("0) Return \nList of products\nEnter a number to choose: "), ui);
 
                 if (choice < 0 || choice > maxChoice) {
                     ui.displayMessage("Invalid. Please pick a number between 0 and " + maxChoice);
@@ -143,22 +141,22 @@ public class MainMenu {
         return choice;
     }
 
-    private int intParser(String stringToParse) {
+    private int intParser(String stringToParse, TextUI ui) {
         try {
             return Integer.parseInt(stringToParse);
         } catch (NumberFormatException e) {
-            return intParser(ui.getInput("Input wasn't a number please try again: "));
+            return intParser(ui.getInput("Input wasn't a number please try again: "), ui);
         }
     }
-    private double doubleParser(String stringToParse) {
+    private double doubleParser(String stringToParse, TextUI ui) {
         try {
             return Double.parseDouble(stringToParse);
         } catch (NumberFormatException e) {
-            return doubleParser(ui.getInput("Input wasn't a number please try again: "));
+            return doubleParser(ui.getInput("Input wasn't a number please try again: "), ui);
         }
     }
 
-    private void recipeOptions(Recipe selected) {
+    public void recipeOptions(Recipe selected, User currentUser, TextUI ui) {
         boolean exists = false;
         String selectResponse;
 
@@ -189,10 +187,10 @@ public class MainMenu {
             }
             switch (selectResponse) {
                 case "1":
-                    showCheapestProducts(selected);
+                    showCheapestProducts(selected, ui, currentUser);
                     break;
                 case "2":
-                    showCheapestStore(selected);
+                    showCheapestStore(selected, ui);
                     break;
                 case "3":
                     if (!exists) {
@@ -238,7 +236,7 @@ public class MainMenu {
     }
 
 
-    public void showCheapestStore(Recipe selected) {
+    public void showCheapestStore(Recipe selected, TextUI ui) {
         // TODO: 11-12-2023 skal have mulighed for at vælge en butik og se produkter
         ArrayList<Recipe.Store> stores = selected.findCheapestStore(allProducts);
         for (int i = 1; i < stores.size(); i++) {
@@ -262,12 +260,12 @@ public class MainMenu {
         }
     }
 
-    public void showCheapestProducts(Recipe selected) {
+    public void showCheapestProducts(Recipe selected, TextUI ui, User currentUser) {
         // TODO: 11-12-2023 skal have mulighed for at vælge et produkt og gemme osv.
         var products = selected.findCheapestProductsNewAndBetter(allProducts, null);
-        ArrayList<String> bugFixList = new ArrayList<>();
+        ArrayList<String> showProducts = new ArrayList<>();
         for (Product p:products) {
-            bugFixList.add(p.getName());
+            showProducts.add(p.getName());
         }
         int counter = 1;
         for (Product p : selected.getProductList()) {
@@ -275,26 +273,26 @@ public class MainMenu {
             else ui.displayMessage(counter+ ") " +p.toString());
             counter ++;
         }
-        productOptions(bugFixList);
+        productOptions(showProducts, ui, currentUser);
     }
 
-    public void getSavedProducts() {
+    public void getSavedProducts(User currentUser, TextUI ui) {
         int counter = 1;
         for (String productName : currentUser.getSavedProducts())
         {
             ui.displayMessage(counter+") " + productName);
             counter++;
         }
-        productOptions(currentUser.getSavedProducts());
+        productOptions(currentUser.getSavedProducts(), ui, currentUser);
     }
 
-    public void getSavedRecipes() {
+    public void getSavedRecipes(User currentUser, TextUI ui) {
         int counter = 1;
         for (String recipeName : currentUser.getSavedRecipes()){
             ui.displayMessage(counter+") "+recipeName);
             counter++;
         }
-        int choice = userChoice(currentUser.getSavedRecipes().size(), false);
+        int choice = userChoice(currentUser.getSavedRecipes().size(), false, ui);
         if(choice == 0) return;
         Recipe recipeChosen = null;
         for (Recipe recipe: allRecipes){
@@ -303,10 +301,10 @@ public class MainMenu {
                 break;
             }
         }
-        recipeOptions(recipeChosen);
+        recipeOptions(recipeChosen, currentUser, ui);
     }
-    private void productOptions(ArrayList<String> listToChooseFrom){
-        int choice = userChoice(listToChooseFrom.size(), true);
+    private void productOptions(ArrayList<String> listToChooseFrom, TextUI ui, User currentUser){
+        int choice = userChoice(listToChooseFrom.size(), true, ui);
         if (choice != 0) {
             String selected = listToChooseFrom.get(choice - 1);
             while (true) {
@@ -314,9 +312,9 @@ public class MainMenu {
                 boolean productIsSaved = false;
                 ui.displayMessage(selected);
                 if(currentUser.getSavedProducts().contains(selected)){
-                    showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Remove product search\n0. Return"));
+                    showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Remove product search\n0. Return"), ui);
                     productIsSaved = true;
-                } else showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Save it to your favorite list of products\n0. Return"));
+                } else showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Save it to your favorite list of products\n0. Return"), ui);
                 switch (showPriceOrSave) {
                     case 1:
                         ui.displayMessage("Stores and Prices for " + selected + ":");
@@ -342,15 +340,15 @@ public class MainMenu {
             }
         }
     }
-    private void showRecipesAndPrice(ArrayList<Recipe> matchedRecipe) {
+    private void showRecipesAndPrice(ArrayList<Recipe> matchedRecipe, TextUI ui, User currentUser) {
         ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
         for (int i = 0; i < matchedRecipe.size(); i++) {
             ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).getTotalPrice() + " DKK");
         }
-        int choice = userChoice(matchedRecipe.size(), false);
+        int choice = userChoice(matchedRecipe.size(), false, ui);
         if(choice != 0) {
             Recipe selected = matchedRecipe.get(choice - 1);
-            recipeOptions(selected);
+            recipeOptions(selected, currentUser, ui);
         }
     }
     public static ArrayList<Product> generateDataset(int numEntries) {

@@ -423,9 +423,8 @@ public class DBConnector {
         }
         return recipeList;
     }
-    public List<Recipe> recipeOptions(List<Recipe> recipeOptions) {
-        return recipeOptions;
-    }
+    /* public List<Recipe> recipeOptions(List<Recipe> recipeOptions) {
+        return recipeOptions; */
 
     public boolean insertFoodProducts(Product productToInsert) {
         boolean insertCompleted = false;

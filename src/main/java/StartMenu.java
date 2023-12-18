@@ -3,16 +3,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class StartMenu {
-    protected DBConnector dbConnector = new DBConnector();
     protected TextUI textUI = new TextUI();
     protected User currentUser;
-    private ArrayList<String> favoriteProducts = new ArrayList<>();
-    private ArrayList<String> favoriteRecipes = new ArrayList<>();
 
     StartMenu() {
     }
 
-    public void display() {
+    public void display(DBConnector dbConnector) {
         boolean choosingAction = true;
 
         while(choosingAction) {
@@ -23,13 +20,13 @@ class StartMenu {
                 int menuOption = Integer.parseInt(input);
                 switch (menuOption) {
                     case 1:
-                        this.loginOrDelete("login");
+                        this.loginOrDelete("login", dbConnector);
                         break;
                     case 2:
-                        this.createUser();
+                        this.createUser(dbConnector);
                         break;
                     case 3:
-                        this.loginOrDelete("delete");
+                        this.loginOrDelete("delete", dbConnector);
                         break;
                     case 0:
                         System.exit(0);
@@ -57,10 +54,9 @@ class StartMenu {
      * or delete a user by calling the method deleteUser in the DBConnector-class
      * @param action can contain either delete og login
      */
-    private void loginOrDelete(String action)
+    private void loginOrDelete(String action, DBConnector dbConnector)
     {
-        this.dbConnector = new DBConnector();
-        boolean userTableExist = this.dbConnector.countAllUsers();
+        boolean userTableExist = dbConnector.countAllUsers();
         boolean isValidatingUserData = true;
         boolean userExist;
 
@@ -70,13 +66,13 @@ class StartMenu {
                 if (typedUsername.equalsIgnoreCase("q")) {
                     isValidatingUserData = false;
                 } else {
-                    userExist = this.dbConnector.checkUsername(typedUsername);
+                    userExist = dbConnector.checkUsername(typedUsername);
                     if (userExist) {
                         boolean isValidatingPassword = true;
                         while(isValidatingPassword) {
                             String typedPassword = this.textUI.getInput("\nInput password or go back to start menu (q): ");
                             if (!typedPassword.equalsIgnoreCase("q")) {
-                                boolean checkUserPassword = this.dbConnector.checkUserPassword(typedUsername, typedPassword);
+                                boolean checkUserPassword = dbConnector.checkUserPassword(typedUsername, typedPassword);
                                 if (checkUserPassword) {
                                     if(action.equals("delete")) {
                                         boolean deleteUser = dbConnector.deleteUser(typedUsername);
@@ -122,11 +118,11 @@ class StartMenu {
      * not be empty and we will call the method createPassword with the username as parameter
      */
 
-    private void createUser()
+    private void createUser(DBConnector dbConnector)
     {
-        String username = this.createUsername();
+        String username = this.createUsername(dbConnector);
         if (!username.isEmpty()) {
-            this.createPassword(username);
+            this.createPassword(username, dbConnector);
         }
     }
 
@@ -136,7 +132,7 @@ class StartMenu {
      * @return a String containing a valid username
      */
 
-    private String createUsername()
+    private String createUsername(DBConnector dbConnector)
     {
         String username = "";
         boolean isCreatingUsername = true;
@@ -146,7 +142,7 @@ class StartMenu {
             if (typedUsername.equalsIgnoreCase("q")) {
                 isCreatingUsername = false;
             } else if (!Character.isDigit(firstCharacter)) {
-                boolean userExists = this.dbConnector.checkUsername(typedUsername);
+                boolean userExists = dbConnector.checkUsername(typedUsername);
                 if (!userExists) {
                     username = typedUsername;
                     isCreatingUsername = false;
@@ -166,7 +162,7 @@ class StartMenu {
      * if it is a succes we create a instance of a user called currentUser
      * @param username the typedUsername from the createUsername-method
      */
-    private void createPassword(String username)
+    private void createPassword(String username, DBConnector dbConnector)
     {
         boolean isCreatingPassword = true;
         while(isCreatingPassword)
@@ -190,14 +186,13 @@ class StartMenu {
 
             if (password.length() >= 8 && containNumber && containLetter && containSymbol)
             {
-                this.dbConnector = new DBConnector();
-                boolean userSavedToFile = this.dbConnector.createUser(username, password);
+                boolean userSavedToFile = dbConnector.createUser(username, password);
                 if (!userSavedToFile) {
                     this.textUI.displayMessage("\nCould not create a user account. Try again later!");
                 } else {
                     String option = this.textUI.getInput("\nYou have now created a user account. Do you want to log in Y/N ?");
                     if (option.equalsIgnoreCase("y")) {
-                        this.currentUser = new User(username, password, favoriteProducts, favoriteRecipes);
+                        this.currentUser = new User(username, password, new ArrayList<String>(), new ArrayList<String>());
                     }
                 }
                 isCreatingPassword = false;

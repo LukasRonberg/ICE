@@ -1,19 +1,20 @@
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AppFlow {
-    private DBConnector dbConnector = new DBConnector();
-    private TextUI textUI = new TextUI();
-    private MainMenu mainMenu = new MainMenu();
-    private User currentUser;
 
     public void start() throws SQLException {
 
+        DBConnector dbConnector = new DBConnector();
+        TextUI textUI = new TextUI();
+        MainMenu mainMenu = new MainMenu();
+        User currentUser;
+
         StartMenu startMenu = new StartMenu();
-        startMenu.display();
+        startMenu.display(dbConnector);
         currentUser = startMenu.getUserAccount();
         mainMenu.allProducts = dbConnector.getProducts();
         mainMenu.allRecipes = dbConnector.getRecipes();
-        mainMenu.currentUser = currentUser;
         textUI.displayMessage("\n*** Welcome " + currentUser.getUsername() + "! ***");
 
         boolean choosingAction = true;
@@ -29,22 +30,22 @@ public class AppFlow {
 
             switch (userInput) {
                 case "1":
-                    mainMenu.searchProducts();
+                    mainMenu.searchProducts(textUI, currentUser);
                     break;
                 case "2":
-                    mainMenu.searchRecipes();
+                    mainMenu.searchRecipes(textUI, currentUser);
                     break;
                 case "3":
-                    mainMenu.searchByIngredients();
+                    mainMenu.searchByIngredients(textUI, dbConnector, currentUser);
                     break;
                 case "4":
-                    mainMenu.searchRecipesByBudget();
+                    mainMenu.searchRecipesByBudget(textUI, currentUser);
                     break;
                 case "5":
-                    mainMenu.getSavedProducts();
+                    mainMenu.getSavedProducts(currentUser, textUI);
                     break;
                 case "6":
-                    mainMenu.getSavedRecipes();
+                    mainMenu.getSavedRecipes(currentUser, textUI);
                     break;
                 case "0":
                     dbConnector.saveFavoriteLists(currentUser.getUsername(), currentUser.getSavedProducts(), currentUser.getSavedRecipes());
