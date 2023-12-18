@@ -42,7 +42,6 @@ public class MainMenu {
         }
     }
 
-
     private void productOptions(ArrayList<String> listToChooseFrom){
         int choice = userChoice(listToChooseFrom.size(), true);
         if (choice != 0) {
@@ -67,7 +66,6 @@ public class MainMenu {
                     case 2:
                         if (productIsSaved) currentUser.getSavedProducts().remove(selected);
                         else currentUser.getSavedProducts().add(selected);
-
                         break;
                     case 0:
                         return;
@@ -78,11 +76,36 @@ public class MainMenu {
 
     public void searchRecipes() {
         String input = ui.getInput("Enter recipe name: ");
-
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
+
         for (Recipe recipe : allRecipes) {
             if (recipe.getName().toLowerCase().contains(input.toLowerCase())) {
                 matchedRecipe.add(recipe);
+            }
+        }
+        if (!matchedRecipe.isEmpty()) {
+            for (int i = 0; i < matchedRecipe.size(); i++) {
+                ui.displayMessage((i + 1) + ". " + matchedRecipe.get(i).getName());
+            }
+            int choice = userChoice(matchedRecipe.size(), false);
+            if(choice != 0) {
+               Recipe selected = matchedRecipe.get(choice - 1);
+               recipeOptions(selected);
+            }
+        } else {
+            ui.displayMessage("Try again");
+        }
+    }
+
+    public void searchRecipesByLars() {
+        String input = ui.getInput("Enter your desired ingredient: ");
+        ArrayList<Recipe> matchedRecipe = new ArrayList<>();
+        ArrayList<Recipe> allOfTheRecipes = dbConnector.getRecipes();
+        for (Recipe recipe : allOfTheRecipes) {
+            for(String i: recipe.ingredients) {
+                if (i.equalsIgnoreCase(input)) {
+                    matchedRecipe.add(recipe);
+                }
             }
         }
         if (!matchedRecipe.isEmpty()) {
@@ -95,21 +118,29 @@ public class MainMenu {
                 recipeOptions(selected);
             }
         } else {
-            ui.displayMessage("Try again");
+            ui.displayErrorMessage("\nSorry! but "+input+" does not appear in any of our recipes. Please try another one!");
         }
-
-
     }
+
 
     // TODO: 11-12-2023 tilføj funktionalitet til at søge på et delvist ord og spørg om det var dette der blev ment
     public void searchByIngrediens() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a desired ingredient: ");
         String ingredient = scanner.nextLine();
-        List<Recipe> searchedList = dbConnector.getRecipeByIngredient(ingredient);
+        ArrayList<Recipe> searchedList = dbConnector.getRecipeByIngredient(ingredient);
 
-        for (Recipe r : searchedList) {
-            System.out.println(r);
+        if (!searchedList.isEmpty()) {
+            for (int i = 0; i < searchedList.size(); i++) {
+                ui.displayMessage((i + 1) + ". " + searchedList.get(i).getName());
+            }
+            int choice = userChoice(searchedList.size(), false);
+            if(choice != 0) {
+                Recipe selected = searchedList.get(choice - 1);
+                recipeOptions(selected);
+            }
+        } else {
+            System.out.println(ingredient + " does not appear in any of our recipes. Please try another one.");
         }
     }
 
@@ -144,7 +175,6 @@ public class MainMenu {
             Product product = new Product(name, (int) weight, price, null, productType, storeType);
             dataset.add(product);
         }
-
         return dataset;
     }
 
@@ -198,7 +228,6 @@ public class MainMenu {
             return Integer.parseInt(stringToParse);
         } catch (NumberFormatException e) {
             return intParser(ui.getInput("Input wasn't a number please try again: "));
-
         }
     }
 
