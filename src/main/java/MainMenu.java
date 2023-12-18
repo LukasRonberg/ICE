@@ -179,31 +179,37 @@ public class MainMenu {
     }
 
     public void searchRecipesByBudget() {
-        //double totalPrice = 0;
-        double userBudget = Double.parseDouble(ui.getInput("Enter your budget:"));
-        ArrayList<Recipe> foundRecipes = new ArrayList<>();
 
-        for (Recipe recipe : allRecipes) {
-            recipe.calculateTotalPrice(allProducts);
-        }
+        try{
+            double userBudget = Double.parseDouble(ui.getInput("Enter your budget:"));
 
-        for (int i = 0; i < allRecipes.size(); i++) {
-            if (userBudget >= allRecipes.get(i).totalPrice) {
-                foundRecipes.add(allRecipes.get(i));
+            ArrayList<Recipe> foundRecipes = new ArrayList<>();
+
+            for (Recipe recipe : allRecipes) {
+                recipe.calculateTotalPrice(allProducts);
             }
+
+            for (int i = 0; i < allRecipes.size(); i++) {
+                if (userBudget >= allRecipes.get(i).totalPrice) {
+                    foundRecipes.add(allRecipes.get(i));
+                }
+            }
+
+            foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
+            for (int i = 0; i < foundRecipes.size(); i++) {
+                ui.displayMessage((i + 1) + ". " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
+            }
+
+            int choice = userChoice(foundRecipes.size(), false);
+
+            if (choice != 0) {
+                Recipe selected = foundRecipes.get(choice - 1);
+                recipeOptions(selected);
+            }
+        } catch (NumberFormatException e) {
+            doubleParser("");
         }
 
-        foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
-        for (int i = 0; i < foundRecipes.size(); i++) {
-            ui.displayMessage((i + 1) + ". " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
-        }
-
-        int choice = userChoice(foundRecipes.size(), false);
-
-        if (choice != 0) {
-            Recipe selected = foundRecipes.get(choice - 1);
-            recipeOptions(selected);
-        }
     }
 
     private int userChoice(int maxChoice, boolean isProduct) {
@@ -228,6 +234,13 @@ public class MainMenu {
             return Integer.parseInt(stringToParse);
         } catch (NumberFormatException e) {
             return intParser(ui.getInput("Input wasn't a number please try again: "));
+        }
+    }
+    private double doubleParser(String stringToParse) {
+        try {
+            return Double.parseDouble(stringToParse);
+        } catch (NumberFormatException e) {
+            return doubleParser(ui.getInput("Input wasn't a number please try again: "));
         }
     }
 
