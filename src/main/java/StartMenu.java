@@ -130,7 +130,7 @@ class StartMenu {
         }
     }
 
-    /** we ask for a username and checks if it begins with a letter by using th method isDigit() from the Character-class that takes a char-character
+    /** we ask for a username and checks if it begins with a letter by using th method isDigit() and check if length is at least 5 characters
      * if that is not true we call the method checkUsername in the DBConnector-class that returns a boolean. Is the boolean true then there is no one else
      * using that username and we return the userName to the createUser-method. if it is not true then we return a empty string.
      * @return a String containing a valid username
