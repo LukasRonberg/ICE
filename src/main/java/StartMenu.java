@@ -137,11 +137,11 @@ class StartMenu {
         String username = "";
         boolean isCreatingUsername = true;
         while(isCreatingUsername) {
-            String typedUsername = this.textUI.getInput("\nCreate username (Must begin with a letter) or go back to start menu (q): ");
+            String typedUsername = this.textUI.getInput("\nCreate username (Must begin with a letter and be minimum 5 characters long) or go back to start menu (q): ");
             char firstCharacter = typedUsername.charAt(0);
             if (typedUsername.equalsIgnoreCase("q")) {
                 isCreatingUsername = false;
-            } else if (!Character.isDigit(firstCharacter)) {
+            } else if (!Character.isDigit(firstCharacter) && typedUsername.length() >= 5) {
                 boolean userExists = dbConnector.checkUsername(typedUsername);
                 if (!userExists) {
                     username = typedUsername;
@@ -150,7 +150,7 @@ class StartMenu {
                     this.textUI.displayErrorMessage("\nUsername exist in our database, try another one!");
                 }
             } else {
-                this.textUI.displayErrorMessage("\nUsername must begin with a letter!");
+                this.textUI.displayErrorMessage("\nThe specified username does not meet our requirements, try again!");
             }
         }
         return username;
