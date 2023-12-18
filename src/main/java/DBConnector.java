@@ -434,9 +434,9 @@ public class DBConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "INSERT INTO product (name,store, weight, price, image, type) VALUES ('" + productToInsert.name + "', '"
-                    + productToInsert.storeType + "', '" +productToInsert.weight + "', '" + productToInsert.price +
-                    "', '" + productToInsert.image + "', '" + productToInsert.productType + "')";
+            String sql = "INSERT INTO product (name,store, weight, price, image, type) VALUES ('" + productToInsert.getName() + "', '"
+                    + productToInsert.storeType + "', '" +productToInsert.getWeight() + "', '" + productToInsert.getPrice() +
+                    "', '" + productToInsert.getImage() + "', '" + productToInsert.productType + "')";
             stmt = conn.prepareStatement(sql);
             stmt.executeUpdate(sql);
             stmt.close();
@@ -474,9 +474,9 @@ public class DBConnector {
             System.out.println("The product-table are being created.....");
             for(Product p: newProductList)
             {
-               String sql = "INSERT INTO products (name, store, weight, price, image, type) VALUES ('" + p.name + "', '"
-                        + p.storeType + "', '" + p.weight + "', '" + p.price +
-                        "', '" + p.image + "', '" + p.productType + "')";
+               String sql = "INSERT INTO products (name, store, weight, price, image, type) VALUES ('" + p.getName() + "', '"
+                        + p.storeType + "', '" + p.getWeight() + "', '" + p.getPrice() +
+                        "', '" + p.getImage() + "', '" + p.productType + "')";
                 stmt = conn.prepareStatement(sql);
                 stmt.executeUpdate(sql);
             }

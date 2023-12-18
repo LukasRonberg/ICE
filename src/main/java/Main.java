@@ -13,7 +13,7 @@ public class Main {
      *  of the class Product. Then we send the newProductList to a method in DBConnector-class that puts it into a table in our Database.
      */
     public static void generateProductList() {
-        TextUi textUI = new TextUi();
+        TextUI textUI = new TextUI();
         long start, end;
         start = System.nanoTime();
         DBConnector dbConnector = new DBConnector();

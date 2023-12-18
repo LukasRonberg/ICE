@@ -2,16 +2,12 @@ import java.util.*;
 
 public class Recipe {
 
-    String name;
+    private String name;
 
-    List<String> ingredients;
+    private List<String> ingredients;
 
-    double totalPrice;
+    private double totalPrice;
     private ArrayList<Product> productList = null;
-
-public double getTotalPrice(){
-    return totalPrice;
-}
 
     public Recipe(String name, List<String> ingredients) {
         this.name = name;
@@ -22,7 +18,7 @@ public double getTotalPrice(){
         double priceCalc = 0;
         if(productList == null || productList.isEmpty()) findCheapestProductsNewAndBetter(allProducts, null);
         for (Product product: productList) {
-            priceCalc += product.price;
+            priceCalc += product.getPrice();
         }
         totalPrice = priceCalc;
         return priceCalc;
@@ -39,8 +35,8 @@ public double getTotalPrice(){
 
         if(ingredients == null) ingredients = this.ingredients;
         for (Product product : productList) {
-            if (ingredients.contains(product.name.toLowerCase())) {
-                String ingredient = product.name.toLowerCase();
+            if (ingredients.contains(product.getName().toLowerCase())) {
+                String ingredient = product.getName().toLowerCase();
                 if (!cheapestProductMap.containsKey(ingredient) ||
                         product.getPricePerHundredGrams() < cheapestProductMap.get(ingredient).getPricePerHundredGrams()) {
                     cheapestProductMap.put(ingredient, product);
@@ -57,7 +53,7 @@ public double getTotalPrice(){
 
         if(ingredients == null) ingredients = this.ingredients;
         for (Product product : productList) {
-            if (ingredients.contains(product.name.toLowerCase()) && product.storeType == storeType) {
+            if (ingredients.contains(product.getName().toLowerCase()) && product.storeType == storeType) {
                 cheapestProducts.add(product);
                 }
 
@@ -95,6 +91,12 @@ public double getTotalPrice(){
 
     public ArrayList<Product> getProductList() {
         return productList;
+    }
+
+    public List<String> getIngredients() { return ingredients; }
+
+    public double getTotalPrice(){
+        return totalPrice;
     }
 
     // TODO: 08-12-2023 ryk klasse?

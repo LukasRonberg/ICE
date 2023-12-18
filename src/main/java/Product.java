@@ -1,12 +1,12 @@
 public class Product {
 
-    String name;
+    private String name;
 
-    int weight;
+    private int weight;
 
-    double price;
+    private double price;
 
-    String image;
+    private String image;
 
     Enums.ProductType productType = null;
     Enums.StoreType storeType = null;
@@ -54,6 +54,14 @@ public class Product {
         }
 
         return "\u001B[35mName: \u001B[0m"+prettyName + "\u001B[32m Price: \u001B[0m" + prettyPrice + "\u001B[32mPrice per 100g: \u001B[0m" + prettyPricePerHundred +  /*", product type: " + productType +*/ "\u001b[34mWeight: \u001B[0m" + prettyWeight+ "\u001b[31mStore: \u001B[0m" + prettyStore +"\u001B[0m";
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public double getPrice() {

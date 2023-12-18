@@ -2,7 +2,7 @@ import java.sql.SQLException;
 
 public class AppFlow {
     private DBConnector dbConnector = new DBConnector();
-    private TextUi textUI = new TextUi();
+    private TextUI textUI = new TextUI();
     private MainMenu mainMenu = new MainMenu();
     private User currentUser;
 
@@ -35,8 +35,7 @@ public class AppFlow {
                     mainMenu.searchRecipes();
                     break;
                 case "3":
-                    mainMenu.searchRecipesByLars();
-                    //mainMenu.searchByIngrediens();
+                    mainMenu.searchByIngredients();
                     break;
                 case "4":
                     mainMenu.searchRecipesByBudget();

@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 class StartMenu {
     protected DBConnector dbConnector = new DBConnector();
-    protected TextUi textUI = new TextUi();
+    protected TextUI textUI = new TextUI();
     protected User currentUser;
     private ArrayList<String> favoriteProducts = new ArrayList<>();
     private ArrayList<String> favoriteRecipes = new ArrayList<>();

@@ -4,17 +4,9 @@ import java.util.*;
 public class MainMenu {
     public ArrayList<Recipe> allRecipes;
     public ArrayList<Product> allProducts;
-    private TextUi ui = new TextUi();
+    private TextUI ui = new TextUI();
     private DBConnector dbConnector = new DBConnector();
     User currentUser;
-
-    public void startUp() {
-        // Get recipes
-        allRecipes = dbConnector.getRecipes();
-        if (allRecipes == null) allRecipes = new ArrayList<>();
-        // Get products
-        allProducts = dbConnector.getProducts();
-    }
 
     public void searchProducts() {
         String input = ui.getInput("Enter product name:");
@@ -42,44 +34,6 @@ public class MainMenu {
         }
     }
 
-    private void productOptions(ArrayList<String> listToChooseFrom){
-        int choice = userChoice(listToChooseFrom.size(), true);
-        if (choice != 0) {
-            String selected = listToChooseFrom.get(choice - 1);
-            while (true) {
-                int showPriceOrSave = 0;
-                boolean productIsSaved = false;
-                ui.displayMessage(selected);
-                if(currentUser.getSavedProducts().contains(selected)){
-                    showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Remove product search\n0. Return"));
-                    productIsSaved = true;
-                } else showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Save it to your favorite list of products\n0. Return"));
-                switch (showPriceOrSave) {
-                    case 1:
-                        ui.displayMessage("Stores and Prices for " + selected + ":");
-                        ArrayList<Product> productsOfType = new ArrayList<>();
-                        for (Product product : allProducts) {
-                            if (product.getName().equalsIgnoreCase(selected)) {
-                                productsOfType.add(product);
-                                //ui.displayMessage(product.toString());
-                            }
-                        }
-                        productsOfType.sort(Comparator.comparingDouble(Product::getPricePerHundredGrams));
-                        for (Product p:productsOfType) {
-                            System.out.println(p.toString());
-                        }
-                        break;
-                    case 2:
-                        if (productIsSaved) currentUser.getSavedProducts().remove(selected);
-                        else currentUser.getSavedProducts().add(selected);
-                        break;
-                    case 0:
-                        return;
-                }
-            }
-        }
-    }
-
     public void searchRecipes() {
         String input = ui.getInput("Enter recipe name: ");
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
@@ -97,26 +51,18 @@ public class MainMenu {
 
 
         if (!matchedRecipe.isEmpty()) {
-            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
-            for (int i = 0; i < matchedRecipe.size(); i++) {
-                ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).totalPrice + " DKK");
-            }
-            int choice = userChoice(matchedRecipe.size(), false);
-            if(choice != 0) {
-               Recipe selected = matchedRecipe.get(choice - 1);
-               recipeOptions(selected);
-            }
+            showRecipesAndPrice(matchedRecipe);
         } else {
             ui.displayMessage("Try again");
         }
     }
 
-    public void searchRecipesByLars() {
+    public void searchByIngredients() {
         String input = ui.getInput("Enter your desired ingredient: ");
         ArrayList<Recipe> matchedRecipe = new ArrayList<>();
         ArrayList<Recipe> allOfTheRecipes = dbConnector.getRecipes();
         for (Recipe recipe : allOfTheRecipes) {
-            for(String i: recipe.ingredients) {
+            for(String i: recipe.getIngredients()) {
                 if (i.contains(input) && matchedRecipe.contains(recipe) == false) {
                     matchedRecipe.add(recipe);
                 }
@@ -129,23 +75,14 @@ public class MainMenu {
         matchedRecipe.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
 
         if (!matchedRecipe.isEmpty()) {
-            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
-            for (int i = 0; i < matchedRecipe.size(); i++) {
-                ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).totalPrice + " DKK");
-            }
-            int choice = userChoice(matchedRecipe.size(), false);
-            if(choice != 0) {
-                Recipe selected = matchedRecipe.get(choice - 1);
-                recipeOptions(selected);
-            }
+            showRecipesAndPrice(matchedRecipe);
         } else {
             ui.displayErrorMessage("\nSorry! but "+input+" does not appear in any of our recipes. Please try another one!");
         }
     }
 
-
     // TODO: 11-12-2023 tilføj funktionalitet til at søge på et delvist ord og spørg om det var dette der blev ment
-    public void searchByIngrediens() throws SQLException {
+    public void searchByIngredientExample() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter a desired ingredient: ");
         String ingredient = scanner.nextLine();
@@ -165,40 +102,6 @@ public class MainMenu {
         }
     }
 
-    public static ArrayList<Product> generateDataset(int numEntries) {
-        ArrayList<Product> dataset = new ArrayList<>();
-        Random random = new Random();
-
-        String[] mad = new String[]{"hakket oksekød", "letmælk", "smør", "revet mozzarella", "peberfrugt", "ris",
-                "kyllingebryst", "æg", "tomater", "løg", "gulerødder", "kartofler", "hvedemel", "brød", "bananer",
-                "æbler", "appelsiner", "spinat", "broccoli", "laks", "tunge fløde", "parmesan", "spaghetti",
-                "olivenolie", "hvidløg", "agurk", "ærter", "kiks", "yoghurt", "honning", "avocado", "svinekød", "majs",
-                "grønne bønner", "pølser", "jordnøddesmør", "risengrød", "rosiner", "havregryn", "kaffe", "te",
-                "chokolade", "rugbrød", "solsikkefrø", "is", "rugbrødschips", "koriander", "tomatsauce", "mel", "bønner"
-                , "mayonnaise", "citron", "ost", "æggepasta", "hakket kylling", "taco-skaller", "vaniljeis", "friske bær"
-                , "hakket svinekød", "fløde", "mælk", "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding",
-                "citronsaft", "appelsinjuice", "fiskesauce", "sojasauce", "pasta", "gær", "balsamicoeddike", "røde bønner",
-                "mørk chokolade", "sukker", "kanel", "jordbærmarmelade", "ærtepuré", "kyllingefond", "tun på dåse", "frisk ingefær",
-                "muskatnød", "flødeost", "rucola", "paprika", "rødvin", "hvidvin",
-                "letmælk", "revet mozzarella", "peberfrugt", "agurk", "kiks", "honning", "avocado", "grønne bønner",
-                "pølser", "jordnøddesmør", "rugbrød", "solsikkefrø", "rugbrødschips", "is", "friske bær", "fløde", "mælk",
-                "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding", "citronsaft", "appelsinjuice",
-                "fiskesauce", "sojasauce", "gær", "balsamicoeddike", "røde bønner", "sukker", "jordbærmarmelade", "ærtepuré",
-                "kyllingefond", "tun på dåse", "frisk ingefær", "muskatnød", "rucola", "paprika"};
-
-        for (int i = 0; i < numEntries; i++) {
-            String name = mad[random.nextInt(0, mad.length)];
-            double weight = random.nextInt(50, 1000);
-            double price = random.nextInt(5, 50);
-            Enums.ProductType productType = Enums.ProductType.MEAT;
-            Enums.StoreType storeType = Enums.StoreType.values()[random.nextInt(Enums.StoreType.values().length)]; // Vælg en tilfældig butikstype
-
-            Product product = new Product(name, (int) weight, price, null, productType, storeType);
-            dataset.add(product);
-        }
-        return dataset;
-    }
-
     public void searchRecipesByBudget() {
 
         try{
@@ -211,27 +114,16 @@ public class MainMenu {
             }
 
             for (int i = 0; i < allRecipes.size(); i++) {
-                if (userBudget >= allRecipes.get(i).totalPrice) {
+                if (userBudget >= allRecipes.get(i).getTotalPrice()) {
                     foundRecipes.add(allRecipes.get(i));
                 }
             }
 
             foundRecipes.sort(Comparator.comparingDouble(Recipe::getTotalPrice));
-            ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
-            for (int i = 0; i < foundRecipes.size(); i++) {
-                ui.displayMessage((i + 1) + ") " + foundRecipes.get(i).getName() + " - " + foundRecipes.get(i).totalPrice + " DKK");
-            }
-
-            int choice = userChoice(foundRecipes.size(), false);
-
-            if (choice != 0) {
-                Recipe selected = foundRecipes.get(choice - 1);
-                recipeOptions(selected);
-            }
+            showRecipesAndPrice(foundRecipes);
         } catch (NumberFormatException e) {
             doubleParser("");
         }
-
     }
 
     private int userChoice(int maxChoice, boolean isProduct) {
@@ -266,7 +158,7 @@ public class MainMenu {
         }
     }
 
-    public void recipeOptions(Recipe selected) {
+    private void recipeOptions(Recipe selected) {
         boolean exists = false;
         String selectResponse;
 
@@ -281,7 +173,7 @@ public class MainMenu {
             if (exists) {
                 selectResponse = ui.getInput(selected.getName()
                         + ": Ingredients include:"
-                        + selected.ingredients
+                        + selected.getIngredients()
                         + " \n1. Show cheapest products"
                         + " \n2. Show cheapest store to shop"
                         + " \n3. Remove recipe from saved recipes"
@@ -289,7 +181,7 @@ public class MainMenu {
             } else {
                 selectResponse = ui.getInput(selected.getName()
                         + ": Ingredients include: "
-                        + selected.ingredients
+                        + selected.getIngredients()
                         + " \n1. Show cheapest products"
                         + " \n2. Show cheapest store to shop"
                         + " \n3. Save it to your favorite list of recipes"
@@ -331,11 +223,11 @@ public class MainMenu {
         Random random = new Random();
         for (Product p: oldProductList) {
             for(int j = 0; j < Enums.StoreType.values().length; j++) {
-                String name = p.name;
-                int weight = p.weight;
-                int price1 = (int) (((p.price*20/100)+1)*-1);
-                int price2 = (int) (p.price*20/100)+1;
-                double price = p.price-(random.nextInt(price1,price2));
+                String name = p.getName();
+                int weight = p.getWeight();
+                int price1 = (int) (((p.getPrice()*20/100)+1)*-1);
+                int price2 = (int) (p.getPrice()*20/100)+1;
+                double price = p.getPrice()-(random.nextInt(price1,price2));
                 Enums.ProductType productType = p.productType;
                 Enums.StoreType storeType = Enums.StoreType.values()[j];
                 Product product = new Product(name, weight, price, null, productType, storeType);
@@ -413,4 +305,86 @@ public class MainMenu {
         }
         recipeOptions(recipeChosen);
     }
+    private void productOptions(ArrayList<String> listToChooseFrom){
+        int choice = userChoice(listToChooseFrom.size(), true);
+        if (choice != 0) {
+            String selected = listToChooseFrom.get(choice - 1);
+            while (true) {
+                int showPriceOrSave = 0;
+                boolean productIsSaved = false;
+                ui.displayMessage(selected);
+                if(currentUser.getSavedProducts().contains(selected)){
+                    showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Remove product search\n0. Return"));
+                    productIsSaved = true;
+                } else showPriceOrSave = intParser(ui.getInput("1. Show prices and stores\n2. Save it to your favorite list of products\n0. Return"));
+                switch (showPriceOrSave) {
+                    case 1:
+                        ui.displayMessage("Stores and Prices for " + selected + ":");
+                        ArrayList<Product> productsOfType = new ArrayList<>();
+                        for (Product product : allProducts) {
+                            if (product.getName().equalsIgnoreCase(selected)) {
+                                productsOfType.add(product);
+                                //ui.displayMessage(product.toString());
+                            }
+                        }
+                        productsOfType.sort(Comparator.comparingDouble(Product::getPricePerHundredGrams));
+                        for (Product p:productsOfType) {
+                            System.out.println(p.toString());
+                        }
+                        break;
+                    case 2:
+                        if (productIsSaved) currentUser.getSavedProducts().remove(selected);
+                        else currentUser.getSavedProducts().add(selected);
+                        break;
+                    case 0:
+                        return;
+                }
+            }
+        }
+    }
+    private void showRecipesAndPrice(ArrayList<Recipe> matchedRecipe) {
+        ui.displayMessage("Please note that the prices below are suggestive and not an accurate estimation of the total price.");
+        for (int i = 0; i < matchedRecipe.size(); i++) {
+            ui.displayMessage((i + 1) + ") " + matchedRecipe.get(i).getName() + " - " + matchedRecipe.get(i).getTotalPrice() + " DKK");
+        }
+        int choice = userChoice(matchedRecipe.size(), false);
+        if(choice != 0) {
+            Recipe selected = matchedRecipe.get(choice - 1);
+            recipeOptions(selected);
+        }
+    }
+    public static ArrayList<Product> generateDataset(int numEntries) {
+        ArrayList<Product> dataset = new ArrayList<>();
+        Random random = new Random();
+
+        String[] mad = new String[]{"hakket oksekød", "letmælk", "smør", "revet mozzarella", "peberfrugt", "ris",
+                "kyllingebryst", "æg", "tomater", "løg", "gulerødder", "kartofler", "hvedemel", "brød", "bananer",
+                "æbler", "appelsiner", "spinat", "broccoli", "laks", "tunge fløde", "parmesan", "spaghetti",
+                "olivenolie", "hvidløg", "agurk", "ærter", "kiks", "yoghurt", "honning", "avocado", "svinekød", "majs",
+                "grønne bønner", "pølser", "jordnøddesmør", "risengrød", "rosiner", "havregryn", "kaffe", "te",
+                "chokolade", "rugbrød", "solsikkefrø", "is", "rugbrødschips", "koriander", "tomatsauce", "mel", "bønner"
+                , "mayonnaise", "citron", "ost", "æggepasta", "hakket kylling", "taco-skaller", "vaniljeis", "friske bær"
+                , "hakket svinekød", "fløde", "mælk", "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding",
+                "citronsaft", "appelsinjuice", "fiskesauce", "sojasauce", "pasta", "gær", "balsamicoeddike", "røde bønner",
+                "mørk chokolade", "sukker", "kanel", "jordbærmarmelade", "ærtepuré", "kyllingefond", "tun på dåse", "frisk ingefær",
+                "muskatnød", "flødeost", "rucola", "paprika", "rødvin", "hvidvin",
+                "letmælk", "revet mozzarella", "peberfrugt", "agurk", "kiks", "honning", "avocado", "grønne bønner",
+                "pølser", "jordnøddesmør", "rugbrød", "solsikkefrø", "rugbrødschips", "is", "friske bær", "fløde", "mælk",
+                "kyllingelever", "rugbrødstoast", "frossen pizza", "frossen grøntsagsblanding", "citronsaft", "appelsinjuice",
+                "fiskesauce", "sojasauce", "gær", "balsamicoeddike", "røde bønner", "sukker", "jordbærmarmelade", "ærtepuré",
+                "kyllingefond", "tun på dåse", "frisk ingefær", "muskatnød", "rucola", "paprika"};
+
+        for (int i = 0; i < numEntries; i++) {
+            String name = mad[random.nextInt(0, mad.length)];
+            double weight = random.nextInt(50, 1000);
+            double price = random.nextInt(5, 50);
+            Enums.ProductType productType = Enums.ProductType.MEAT;
+            Enums.StoreType storeType = Enums.StoreType.values()[random.nextInt(Enums.StoreType.values().length)]; // Vælg en tilfældig butikstype
+
+            Product product = new Product(name, (int) weight, price, null, productType, storeType);
+            dataset.add(product);
+        }
+        return dataset;
+    }
 }
+
