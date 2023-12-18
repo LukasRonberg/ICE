@@ -1,13 +1,4 @@
 public class Product {
-    public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType)
-    {
-        this.name = name.toLowerCase();
-        this.weight = weight;
-        this.price = price;
-        this.image = image;
-        this.productType = productType;
-        this.storeType = storeType;
-    }
 
     String name;
 
@@ -20,19 +11,27 @@ public class Product {
     Enums.ProductType productType = null;
     Enums.StoreType storeType = null;
 
+
+    public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType)
+    {
+        this.name = name.toLowerCase();
+        this.weight = weight;
+        this.price = price;
+        this.image = image;
+        this.productType = productType;
+        this.storeType = storeType;
+    }
+
     public double pricePerGram()
     {
         //return 0;
         return price/weight*100;
     }
-
-
     @Override
     public String toString()
     {
         char firstLetter = name.charAt(0);
         String prettyName = Character.toUpperCase(firstLetter) + name.substring(1);
-
         String prettyPrice = price + " DKK";
         String prettyPricePerHundred = (Math.round(pricePerGram() * 100.0) / 100.0) + " DKK";
         String prettyWeight = weight + " g";

@@ -362,51 +362,11 @@ public class DBConnector {
         }
     }
 
-    public ArrayList<Recipes> getRecipesIngredientsAndAmount() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ArrayList<Recipes> recipesAndAmountOfIngredients = new ArrayList<>();
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM recipes";
-            stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String nameOfRecipe = rs.getString("recipeName");
-                String ingredient = rs.getString("ingredientName");
-                int amountInGrams = rs.getInt("amountInGrams");
-                recipesAndAmountOfIngredients.add(new Recipes(nameOfRecipe,ingredient,amountInGrams));
-            }
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException var25) {
-            var25.printStackTrace();
-        } catch (Exception var26) {
-            var26.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException var24) {
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException var23) {
-                var23.printStackTrace();
-            }
-        }
-        return recipesAndAmountOfIngredients;
-    }
 
     // Liste over vores madvarer, i form af en ArrayList
     //TODO Listen skal præsenteret ordentligt overfor brugeren, så vedkommende kan vælge, ligesom i search recipes
-    public List<Recipe> getRecipeByIngredient(String ingredients) throws SQLException {
-        List<Recipe> recipeList = new ArrayList<>();
+    public ArrayList<Recipe> getRecipeByIngredient(String ingredient) throws SQLException {
+        ArrayList<Recipe> recipeList = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -417,19 +377,18 @@ public class DBConnector {
              søge på specifikke ingredienser, som kan forbindes til nøgleord af bestemte ingredienser, og kan
              sammenlignes med opskrifter mm. Og "?" symbolet skal erstattes med værdien af den søgte ingrediens,
              for at undgå forvirring */
-            stmt = conn.prepareStatement("SELECT * FROM recipe WHERE ingredients LIKE '%"+ingredients+"%'");
+            String sql = "SELECT * FROM recipe WHERE ingredients LIKE '%"+ingredient+"%'";
+            stmt = conn.prepareStatement(sql);
 
     /* Symbolet "%" giver anledning til, at kunne matche enhver karakter i vores string af ingredienser, og "1" er vores
     indeks af vores parameter, som vi vil forbinde værdien af vores valgte ingrediens */
             //stmt.setString(1, "%" + ingredients + "%");
-            ResultSet results = stmt.executeQuery();
+            ResultSet results = stmt.executeQuery(sql);
 
-            if (!results.next()) {
-                // Ingredient does not exist
-                System.out.println(ingredients + " does not appear in any of our recipes. Please try another one.");
-            } else {
+            if (results.next()) {
                 while (results.next()) {
                     String name = results.getString("name");
+                    System.out.println(name);
                     String ingredientsData = results.getString("ingredients");
                     ArrayList<String> ingredientList = new ArrayList<>();
                     String[] ingredientsAfterSplit = ingredientsData.split(",");

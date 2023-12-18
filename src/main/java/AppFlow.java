@@ -1,5 +1,4 @@
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class AppFlow {
     private DBConnector dbConnector = new DBConnector();
@@ -11,7 +10,6 @@ public class AppFlow {
 
         StartMenu startMenu = new StartMenu();
         startMenu.display();
-
         currentUser = startMenu.getUserAccount();
         mainMenu.allProducts = dbConnector.getProducts();
         mainMenu.allRecipes = dbConnector.getRecipes();
@@ -37,7 +35,8 @@ public class AppFlow {
                     mainMenu.searchRecipes();
                     break;
                 case "3":
-                    mainMenu.searchByIngrediens();
+                    mainMenu.searchRecipesByLars();
+                    //mainMenu.searchByIngrediens();
                     break;
                 case "4":
                     mainMenu.searchRecipesByBudget();
