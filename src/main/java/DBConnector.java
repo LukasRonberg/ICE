@@ -362,46 +362,6 @@ public class DBConnector {
         }
     }
 
-    public ArrayList<Recipes> getRecipesIngredientsAndAmount() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ArrayList<Recipes> recipesAndAmountOfIngredients = new ArrayList<>();
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql = "SELECT * FROM recipes";
-            stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String nameOfRecipe = rs.getString("recipeName");
-                String ingredient = rs.getString("ingredientName");
-                int amountInGrams = rs.getInt("amountInGrams");
-                recipesAndAmountOfIngredients.add(new Recipes(nameOfRecipe,ingredient,amountInGrams));
-            }
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException var25) {
-            var25.printStackTrace();
-        } catch (Exception var26) {
-            var26.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException var24) {
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException var23) {
-                var23.printStackTrace();
-            }
-        }
-        return recipesAndAmountOfIngredients;
-    }
 
     // Liste over vores madvarer, i form af en ArrayList
     //TODO Listen skal præsenteret ordentligt overfor brugeren, så vedkommende kan vælge, ligesom i search recipes
