@@ -22,7 +22,7 @@ public class Product {
         this.storeType = storeType;
     }
 
-    public double pricePerGram()
+    public double getPricePerHundredGrams()
     {
         //return 0;
         return price/weight*100;
@@ -33,7 +33,7 @@ public class Product {
         char firstLetter = name.charAt(0);
         String prettyName = Character.toUpperCase(firstLetter) + name.substring(1);
         String prettyPrice = price + " DKK";
-        String prettyPricePerHundred = (Math.round(pricePerGram() * 100.0) / 100.0) + " DKK";
+        String prettyPricePerHundred = (Math.round(getPricePerHundredGrams() * 100.0) / 100.0) + " DKK";
         String prettyWeight = weight + " g";
         String prettyStore = storeType.toString();
 

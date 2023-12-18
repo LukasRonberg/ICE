@@ -42,7 +42,7 @@ public double getTotalPrice(){
             if (ingredients.contains(product.name.toLowerCase())) {
                 String ingredient = product.name.toLowerCase();
                 if (!cheapestProductMap.containsKey(ingredient) ||
-                        product.pricePerGram() < cheapestProductMap.get(ingredient).pricePerGram()) {
+                        product.getPricePerHundredGrams() < cheapestProductMap.get(ingredient).getPricePerHundredGrams()) {
                     cheapestProductMap.put(ingredient, product);
                 }
             }
@@ -112,7 +112,7 @@ public double getTotalPrice(){
 
         public void calcTotalStorePrice(){
             for (Product p: products) {
-                totalStorePrice += p.pricePerGram();
+                totalStorePrice += p.getPricePerHundredGrams();
             }
         }
 
