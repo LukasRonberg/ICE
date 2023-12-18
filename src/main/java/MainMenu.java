@@ -60,7 +60,7 @@ public class MainMenu {
         ArrayList<Recipe> allOfTheRecipes = dbConnector.getRecipes();
         for (Recipe recipe : allOfTheRecipes) {
             for(String i: recipe.getIngredients()) {
-                if (i.contains(input) && matchedRecipe.contains(recipe) == false) {
+                if (i.toLowerCase().contains(input.toLowerCase()) && matchedRecipe.contains(recipe) == false) {
                     matchedRecipe.add(recipe);
                 }
             }
