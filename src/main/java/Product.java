@@ -12,6 +12,7 @@ public class Product {
     Enums.StoreType storeType = null;
 
 
+
     public Product(String name, int weight, double price, String image, Enums.ProductType productType, Enums.StoreType storeType)
     {
         this.name = name.toLowerCase();

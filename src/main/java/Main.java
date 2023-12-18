@@ -24,3 +24,4 @@ public class Main {
         textUI.displayMessage("Product list created in "+(int)((end-start)/1000000000)+" seconds");
     }
 }
+

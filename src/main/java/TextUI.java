@@ -13,6 +13,7 @@ public class TextUI {
         return scan.nextLine();
     }
 
+
     /**
      * displays a message
      * @param msg

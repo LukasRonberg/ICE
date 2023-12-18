@@ -10,6 +10,7 @@ public class DBConnector {
     private final String USER = "thegreenway_dk";
     private final String PASS = "TheBlueMan45";
 
+    MainMenu mainMenu = new MainMenu();
     public DBConnector() {
     }
 
